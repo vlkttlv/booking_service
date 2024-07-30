@@ -8,6 +8,7 @@ from app.config import settings
 from app.tasks.celery import celery
 from app.tasks.email_templates import create_booking_confirmation_template
 
+
 @celery.task
 def process_pic(
     path: str,
@@ -19,12 +20,11 @@ def process_pic(
         (200, 100)
     ]:
         resized_img = im.resize(size=(width, height))
-        resized_img.save(f"app/static/images/resized_{width}_{height}_{im_path.name}")
+        resized_img.save(
+            f"app/static/images/resized_{width}_{height}_{im_path.name}")
 
 
-
-
-@celery.task  # Раскомментировать, если нужен celery вместо BackgroundTasks 
+@celery.task
 def send_booking_confirmation_email(
     booking: dict,
     email_to: EmailStr,

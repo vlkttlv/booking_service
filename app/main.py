@@ -22,15 +22,12 @@ from app.admin.auth import authentication_backend
 app = FastAPI()
 
 
-
 # Подключение админки
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 admin.add_view(UsersAdmin)
 admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
 admin.add_view(BookingsAdmin)
-
-
 
 
 app.include_router(router_users)
@@ -41,50 +38,10 @@ app.include_router(router_images)
 app.include_router(router_rooms)
 
 app.mount("/static", StaticFiles(directory="app/static"), "static")
-# class SHotel(BaseModel):
-#     address: str
-#     name: str
-#     stars: int
-
-# class HotelsSearchArgs: # можно использовать этот класс в качестве схемы для гет запрсоов
-#     def __init__(self,
-#                 location: str,
-#                 date_from: date,
-#                 date_to: date,
-#                 has_spa: Optional[bool] = None,
-#                 stars: Optional[int] = Query(None, ge=1, le=5), 
-#     ):
-#         self.location = location
-#         self.date_from = date_from
-#         self.date_to = date_to
-#         self.has_spa = has_spa
-#         self.stars = stars
-
-# @app.get("/hotels", response_model=list[SHotel])
-# def get_hotels(
-#     search: HotelsSearchArgs = Depends()
-# ):
-#     hotels = [
-#         {
-#             "address": "ул. Вершинина, 2, Томск",
-#             "name": "Roga_kopata",
-#             "stars": 2,
-#         }
-#     ]
-#     return hotels
-
-# class SBooking(BaseModel): #схема
-#     room_id: int
-#     date_from: date
-#     date_to: date
-
-# @app.post("/boolings")
-# def add_booking(booking: SBooking): # букинг имеет оформат схемы
-#     pass
-
 
 
 @app.on_event("startup")
 def startup():
-    redis = aioredis.from_url("redis://localhost:6379", encoding="utf8",decode_response=True)
+    redis = aioredis.from_url("redis://localhost:6379",
+                              encoding="utf8", decode_response=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")

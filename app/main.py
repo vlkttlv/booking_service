@@ -3,11 +3,10 @@ from fastapi.staticfiles import StaticFiles
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 
 from redis import asyncio as aioredis
-from sqladmin import Admin, ModelView
-
+from sqladmin import Admin
+from app.config import settings
 from app.admin.views import HotelsAdmin, RoomsAdmin, UsersAdmin, BookingsAdmin
 from app.booking.router import router as router_bookings
 from app.users.models import Users
@@ -20,7 +19,6 @@ from app.database import engine
 from app.admin.auth import authentication_backend
 
 app = FastAPI()
-
 
 # Подключение админки
 admin = Admin(app, engine, authentication_backend=authentication_backend)
@@ -42,6 +40,6 @@ app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 @app.on_event("startup")
 def startup():
-    redis = aioredis.from_url("redis://localhost:6379",
+    redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
                               encoding="utf8", decode_response=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")

@@ -8,6 +8,7 @@ from app.database import async_session_maker
 from fastapi import HTTPException
 from app.hotels.rooms.models import Rooms
 
+
 class HotelDAO(BaseDAO):
 
     model = Hotels
@@ -16,7 +17,8 @@ class HotelDAO(BaseDAO):
     async def find_all_by_location_and_date(cls, location: str, date_from: date, date_to: date):
 
         booked_rooms = (
-            select(Bookings.room_id, func.count(Bookings.room_id).label("rooms_booked"))
+            select(Bookings.room_id, func.count(
+                Bookings.room_id).label("rooms_booked"))
             .select_from(Bookings)
             .where(
                 or_(
@@ -34,10 +36,9 @@ class HotelDAO(BaseDAO):
             .cte("booked_rooms")
         )
 
-
         booked_hotels = (
             select(Rooms.hotel_id, func.sum(
-                    Rooms.quantity - func.coalesce(booked_rooms.c.rooms_booked, 0)
+                Rooms.quantity - func.coalesce(booked_rooms.c.rooms_booked, 0)
             ).label("free_rooms"))
             .select_from(Rooms)
             .join(booked_rooms, booked_rooms.c.room_id == Rooms.id, isouter=True)
@@ -54,7 +55,7 @@ class HotelDAO(BaseDAO):
             # Но используется конструкция Hotels.__table__.columns. Почему? Таким образом алхимия отдает
             # все столбцы по одному, как отдельный атрибут. Если передать всю модель Hotels и
             # один дополнительный столбец rooms_left, то будет проблематично для Pydantic распарсить
-            # такую структуру данных. То есть проблема кроется именно в парсинге ответа алхимии 
+            # такую структуру данных. То есть проблема кроется именно в парсинге ответа алхимии
             # Пайдентиком.
             select(
                 Hotels.__table__.columns,
@@ -68,21 +69,7 @@ class HotelDAO(BaseDAO):
                 )
             )
         )
-        
+
         async with async_session_maker() as session:
             hotels_with_rooms = await session.execute(get_hotels_with_rooms)
             return hotels_with_rooms.mappings().all()
-
-'''
-Пример эндпоинта: /hotels/Алтай.
-HTTP метод: GET.
-HTTP код ответа: 200.
-Описание: возвращает список отелей по заданным параметрам, причем в отеле должен
-быть минимум 1 свободный номер.
-
-Параметры: параметр пути location и параметры запроса date_from, date_to.
-Ответ пользователю: для каждого отеля должно быть указано: id, name, location,
-services, rooms_quantity, image_id, rooms_left (количество оставшихся номеров).
-'''
-
-    

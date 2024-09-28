@@ -1,11 +1,7 @@
-import jwt
-
 from datetime import datetime, timedelta
-from fastapi import HTTPException
+import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
-from fastapi import HTTPException,  status
-
 from app.config import settings
 from app.exceptions import IncorrectEmailOrPasswordException
 from app.users.dao import UsersDAO
@@ -19,10 +15,12 @@ def get_password_hash(password: str) -> str:
 
 
 def verify_password(plain_password, hashed_password) -> bool:
+    """Проверяет пароль на валидность"""
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def create_access_token(data: dict) -> str:
+    """Создает токен"""
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})

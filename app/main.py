@@ -19,6 +19,8 @@ from app.database import engine
 from app.admin.auth import authentication_backend
 
 app = FastAPI()
+# Добавить доп фильтрацию для поиска комнат
+# добавить роль админа
 
 # Подключение админки
 admin = Admin(app, engine, authentication_backend=authentication_backend)
@@ -40,6 +42,9 @@ app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 @app.on_event("startup")
 def startup():
+    """
+    не помню что делает
+    """
     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
                               encoding="utf8", decode_response=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")

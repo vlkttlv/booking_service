@@ -1,11 +1,13 @@
 from app.database import Base
-from sqlalchemy import JSON, Column, Computed, Date, Integer, String, ForeignKey
+from sqlalchemy import Column, Computed, Date, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 class Bookings(Base):
+    """Класс, описывающий модель бронирований"""
     __tablename__ = "bookings"
 
-    id  = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     room_id = Column(ForeignKey("rooms.id"))
     user_id = Column(ForeignKey("users.id"))
     date_from = Column(Date, nullable=False)

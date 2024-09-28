@@ -6,25 +6,29 @@ from app.config import settings
 from app.exceptions import IncorrectTokenFormatException, TokenAbsentException, TokenExpiredException, UserIsNotPresentException
 from app.users.dao import UsersDAO
 
-def get_token(request:Request):
+
+def get_token(request: Request):
+    """Метод, получающий текущий токен"""
     token = request.cookies.get("booking_access_token")
     if not token:
         raise TokenAbsentException
     return token
 
+
 async def get_current_user(token: str = Depends(get_token)):
+    """Возвращает пользователя (при необходимости его данные можно получить)"""
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, settings.ALGORITHM
         )
-    except JWTError:
-        raise IncorrectTokenFormatException
+    except JWTError as e:
+        raise IncorrectTokenFormatException from e
     expire: str = payload.get("exp")
     if (not expire) or (int(expire) < datetime.utcnow().timestamp()):
         raise TokenExpiredException
     user_id: str = payload.get("sub")
     if not user_id:
-        raise UserIsNotPresentException 
+        raise UserIsNotPresentException
     user = await UsersDAO.find_by_id(int(user_id))
     if not user:
         raise UserIsNotPresentException

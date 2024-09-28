@@ -1,5 +1,6 @@
 from app.database import Base
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 
 
@@ -8,7 +9,7 @@ class Hotels(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     location = Column(String, nullable=False)
-    services = Column(JSON)
+    services = Column(ARRAY(String))
     rooms_quantity = Column(Integer, nullable=False)
     image_id = Column(Integer)
 

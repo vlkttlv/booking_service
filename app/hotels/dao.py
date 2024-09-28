@@ -1,12 +1,14 @@
 from datetime import date
+from typing import List
 from sqlalchemy import and_, func, or_, select
 
 from app.booking.models import Bookings
 from app.dao.base import BaseDAO
 from app.hotels.models import Hotels
 from app.database import async_session_maker
-from fastapi import HTTPException
 from app.hotels.rooms.models import Rooms
+
+from fastapi import Query
 
 
 class HotelDAO(BaseDAO):
@@ -14,10 +16,11 @@ class HotelDAO(BaseDAO):
     model = Hotels
 
     @classmethod
-    async def find_all_by_location_and_date(cls, location: str, date_from: date, date_to: date):
-
+    async def find_all_by_location_and_date(cls, location: str, date_from: date, date_to: date, service: str,
+                                            min_check: int = 0, max_check: int = 100000):
+        """Получение всех отелей для указанной локации, дат и ценового диапазона."""
         booked_rooms = (
-            select(Bookings.room_id, func.count(
+            select(Bookings.room_id, Bookings.price, func.count(
                 Bookings.room_id).label("rooms_booked"))
             .select_from(Bookings)
             .where(
@@ -32,44 +35,42 @@ class HotelDAO(BaseDAO):
                     ),
                 ),
             )
-            .group_by(Bookings.room_id)
+            .group_by(Bookings.room_id, Bookings.price)
             .cte("booked_rooms")
         )
 
         booked_hotels = (
-            select(Rooms.hotel_id, func.sum(
+            select(Rooms.hotel_id, Rooms.price, func.sum(
                 Rooms.quantity - func.coalesce(booked_rooms.c.rooms_booked, 0)
-            ).label("free_rooms"))
+            ).label("rooms_left"))
             .select_from(Rooms)
             .join(booked_rooms, booked_rooms.c.room_id == Rooms.id, isouter=True)
-            .group_by(Rooms.hotel_id)
+            .group_by(Rooms.hotel_id, Rooms.price)
             .cte("booked_hotels")
         )
-
+        # SELECT id, name, location, services, rooms_quantity, image_id, hotel_id, hotels.name, SUM(rooms_left) as room_left FROM hotels
+        # LEFT JOIN booked_hotels ON booked_hotels.hotel_id = hotels.id
+        # WHERE rooms_left > 0 AND location LIKE '%Алтай%'
+        # 	AND booked_hotels.price >= 0 AND booked_hotels.price <= 30000
+        # 	AND 'Парковка' = ANY(services) AND 'Wi-Fi' = ANY(services)
+        # GROUP BY id, hotel_id
         get_hotels_with_rooms = (
-            # Код ниже можно было бы расписать так:
-            # select(
-            #     Hotels
-            #     booked_hotels.c.rooms_left,
-            # )
-            # Но используется конструкция Hotels.__table__.columns. Почему? Таким образом алхимия отдает
-            # все столбцы по одному, как отдельный атрибут. Если передать всю модель Hotels и
-            # один дополнительный столбец rooms_left, то будет проблематично для Pydantic распарсить
-            # такую структуру данных. То есть проблема кроется именно в парсинге ответа алхимии
-            # Пайдентиком.
             select(
                 Hotels.__table__.columns,
-                booked_hotels.c.free_rooms,
+                func.sum(booked_hotels.c.rooms_left).label("rooms_left"),
             )
             .join(booked_hotels, booked_hotels.c.hotel_id == Hotels.id, isouter=True)
             .where(
                 and_(
-                    booked_hotels.c.free_rooms > 0,
+                    booked_hotels.c.rooms_left > 0,
                     Hotels.location.like(f"%{location}%"),
+                    booked_hotels.c.price >= min_check,
+                    booked_hotels.c.price <= max_check,
+                    Hotels.services.contains([service])
                 )
             )
+            .group_by(Hotels.id, booked_hotels.c.hotel_id)
         )
-
         async with async_session_maker() as session:
             hotels_with_rooms = await session.execute(get_hotels_with_rooms)
             return hotels_with_rooms.mappings().all()

@@ -17,21 +17,25 @@ router = APIRouter(
     tags=["Бронирования"]
 )
 
+
 @router.get("")
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking]:
+    """Получение всех бронирований пользователя"""
     return await BookingDAO.find_all_with_images(user_id=user.id)
+
 
 @router.post("")
 async def add_booking(room_id: int, date_from: date, date_to: date,
                       user: Users = Depends(get_current_user)):
+    """Добавление бронирование"""
     booking = await BookingDAO.add(user.id, room_id, date_from, date_to)
     if not booking:
         raise RoomCannotBeBooked
     booking_dict = parse_obj_as(SBooking, booking).dict()
     send_booking_confirmation_email.delay(booking_dict, user.email)
 
-    
+
 @router.delete("/{booking_id}",  status_code=204)
 async def delete_booking(booking_id: int, user: Users = Depends(get_current_user)):
-    await BookingDAO.delete(user_id = user.id, id = booking_id)
-
+    """Удаление брони"""
+    await BookingDAO.delete(user_id=user.id, id=booking_id)

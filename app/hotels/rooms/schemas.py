@@ -22,3 +22,17 @@ class SRoomInfo(SRoom):
 
     class Config:
         orm_mode = True
+
+
+class SRoomAdd(BaseModel):
+
+    hotel_id: int
+    name: str
+    description: Optional[str]
+    services: List[str]
+    price: int
+    quantity: int
+    image_id: int
+
+    class Config:
+        orm_mode = True

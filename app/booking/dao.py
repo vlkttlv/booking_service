@@ -8,18 +8,20 @@ from app.database import async_session_maker
 
 
 class BookingDAO(BaseDAO):
+    """Класс для работы с БД с переоределенными методами"""
 
     model = Bookings
 
     @classmethod
     async def find_all_with_images(cls, user_id: int):
+        """Выводит..."""
         async with async_session_maker() as session:
-            '''
-            SELECT *
-            FROM  bookings  b left JOIN  rooms r ON b.room_id = r.id
-            where b.user_id = 3; 
-            -- 3 = user_id 
-            '''
+
+            # SELECT *
+            # FROM  bookings  b left JOIN  rooms r ON b.room_id = r.id
+            # where b.user_id = 3;
+            # -- 3 = user_id
+
             query = (
                 select(
                     Bookings.__table__.columns,
@@ -34,30 +36,18 @@ class BookingDAO(BaseDAO):
 
     @classmethod
     async def add(cls, user_id: int, room_id: int, date_from: date, date_to: date):
-
+        """Добавление бронирования, если есть свободные комнаты"""
         # -- сначала узнаем сколько свободных комнат осталось?
         # -- въезд 2024-06-25
         # -- выезд 2024-07-05
         # -- room 1
-
-        # WITH booked_rooms AS (
-        #     SELECT * FROM bookings
-        #     WHERE room_id = 1 AND
-        #     (date_from >= '2024-06-25' AND date_from <= '2024-07-05') OR
-        #     (date_from <= '2024-06-25' AND date_to >= '2024-06-25' )
-        # )
-
-        # -- получаем все забронированные комнаты + их количесвто всего
-        # -- select * from rooms
-        # -- left join booked_rooms on rooms.id = booked_rooms.room_id
-        # -- where rooms.id = 1
-
-        # -- получаем количество совбодных комнат (всего кол-ва комнат - всего броней на комнату)
-        # select rooms.quantity - COUNT(booked_rooms.room_id) from rooms
-        # left join booked_rooms on rooms.id = booked_rooms.room_id
-        # where rooms.id = 1
-        # group by rooms.quantity
         async with async_session_maker() as session:
+            # WITH booked_rooms AS (
+            #     SELECT * FROM bookings
+            #     WHERE room_id = 1 AND
+            #     (date_from >= '2024-06-25' AND date_from <= '2024-07-05') OR
+            #     (date_from <= '2024-06-25' AND date_to >= '2024-06-25' )
+            # )
             booked_rooms = select(Bookings).where(
                 and_(Bookings.room_id == room_id,
                      or_(
@@ -68,12 +58,20 @@ class BookingDAO(BaseDAO):
                      )
                      )
             ).cte('booked_rooms')
-
+            # -- получаем все забронированные комнаты + их количесвто всего
+            # -- select * from rooms
+            # -- left join booked_rooms on rooms.id = booked_rooms.room_id
+            # -- where rooms.id = 1
             free_rooms = select(Rooms.quantity - func.count(booked_rooms.c.room_id)).select_from(Rooms).join(
                 booked_rooms, booked_rooms.c.room_id == Rooms.id, isouter=True).where(Rooms.id == room_id
                                                                                       ).group_by(Rooms.quantity)
 
             result = await session.execute(free_rooms)
+            # -- получаем количество совбодных комнат (всего кол-ва комнат - всего броней на комнату)
+            # select rooms.quantity - COUNT(booked_rooms.room_id) from rooms
+            # left join booked_rooms on rooms.id = booked_rooms.room_id
+            # where rooms.id = 1
+            # group by rooms.quantity
             free_rooms: int = result.scalar()
             if free_rooms > 0:
 

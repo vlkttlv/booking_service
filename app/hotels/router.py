@@ -1,24 +1,53 @@
-import asyncio
-from datetime import date
-from typing import List, Optional
-from fastapi import APIRouter
-from app.exceptions import WrongDateFrom
+from datetime import date, datetime
+from typing import List
+from fastapi import APIRouter, Depends, Query
+from app.exceptions import IncorrectRoleException, WrongDateFrom
 from app.hotels.dao import HotelDAO
-from app.hotels.schemas import SHotelInfo, SHotels
+from app.hotels.schemas import SHotelAdd, SHotelInfo
 from fastapi_cache.decorator import cache
 
-router = APIRouter(
-    prefix="/hotels",
-    tags=["Отели"]
-)
+from app.users.dependencies import get_current_user
+from app.users.models import Users
+
+router = APIRouter(prefix="/hotels", tags=["Отели"])
 
 
 @router.get("/{location}")
 @cache(expire=20)
-async def get_hotels(location: str, date_from: date, date_to: date) -> List[SHotelInfo]:
+async def get_hotels(
+    location: str,
+    date_from: date = Query(..., description=f"Например, {
+                            datetime.now().date()}"),
+    date_to: date = Query(
+        ...,
+        description=f"Например, {
+            datetime.now().date()}",
+    ),
+    service: str = Query(
+        "Парковка", description="Вводите услуги через запятую без пробела"
+    ),
+    min_check: int = 0,
+    max_check: int = 100_000,
+) -> List[SHotelInfo]:
+    """Получение всех отелей для указанной локации, дат и ценового диапазона."""
     if date_from >= date_to:
         raise WrongDateFrom
-    return await HotelDAO.find_all_by_location_and_date(location, date_from, date_to)
+    return await HotelDAO.find_all_by_location_and_date(
+        location, date_from, date_to, service, min_check, max_check
+    )
+
+
+@router.post("/add_hotel")
+async def add_hotel(hotel_data: SHotelAdd, user: Users = Depends(get_current_user)):
+    """Добавление отеля. Доступно только администраторам"""
+    if user.role != "admin":
+        raise IncorrectRoleException
+    return await HotelDAO.add(
+        name=hotel_data.name,
+        location=hotel_data.location,
+        services=hotel_data.services,
+        rooms_quantity=hotel_data.rooms_quantity,
+    )
 
 
 # @router.get("/id/{hotel_id}", include_in_schema=True)

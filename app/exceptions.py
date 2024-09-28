@@ -19,6 +19,14 @@ class IncorrectEmailOrPasswordException(BookingException):
     detail = "Неверная почта или пароль"
 
 
+class IncorrectRoleException(HTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Вы не являетесь админом"
+
+    def __init__(self):
+        super().__init__(status_code=self.status_code, detail=self.detail)
+
+
 class TokenExpiredException(BookingException):
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Срок действия токена истек"

@@ -1,23 +1,24 @@
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel
 from datetime import date
 
 from sqlalchemy import JSON
 
-class SBooking(BaseModel): # схемы нужны для валидации данных
 
-    id:int
-    room_id: int 
-    user_id: int 
-    date_from: date 
-    date_to: date 
-    price: int 
-    total_cost: int 
+class SBooking(BaseModel):  # схемы нужны для валидации данных
+
+    id: int
+    room_id: int
+    user_id: int
+    date_from: date
+    date_to: date
+    price: int
+    total_cost: int
     total_days: int
-
 
     class Config:
         from_attributes = True
+
 
 class SBookingInfo(SBooking):
     image_id: int

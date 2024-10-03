@@ -24,7 +24,7 @@ async def get_hotels(
             datetime.now().date()}",
     ),
     service: str = Query(
-        "Парковка", description="Вводите услуги через запятую без пробела"
+        "Парковка", description="Вводите услуги через пробел"
     ),
     min_check: int = 0,
     max_check: int = 100_000,

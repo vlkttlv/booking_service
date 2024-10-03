@@ -1,5 +1,6 @@
 from datetime import date
-from sqlalchemy import and_, func, or_, select
+
+from sqlalchemy import and_, cast, func, or_, select, types
 
 from app.booking.models import Bookings
 from app.dao.base import BaseDAO
@@ -13,7 +14,7 @@ class HotelDAO(BaseDAO):
     model = Hotels
 
     @classmethod
-    async def find_all_by_location_and_date(cls, location: str, date_from: date, date_to: date, service: str,
+    async def find_all_by_location_and_date(cls, location: str, date_from: date, date_to: date, services: str,
                                             min_check: int = 0, max_check: int = 100000):
         """Получение всех отелей для указанной локации, дат и ценового диапазона."""
         booked_rooms = (
@@ -49,8 +50,10 @@ class HotelDAO(BaseDAO):
         # LEFT JOIN booked_hotels ON booked_hotels.hotel_id = hotels.id
         # WHERE rooms_left > 0 AND location LIKE '%Алтай%'
         # 	AND booked_hotels.price >= 0 AND booked_hotels.price <= 30000
-        # 	AND 'Парковка' = ANY(services) AND 'Wi-Fi' = ANY(services)
+        # 	AND 'Парковка' = ANY(services) AND array['Бассейн'] && CAST(services as text[])
         # GROUP BY id, hotel_id
+
+        input_services = services.split(' ')
         get_hotels_with_rooms = (
             select(
                 Hotels.__table__.columns,
@@ -63,7 +66,8 @@ class HotelDAO(BaseDAO):
                     Hotels.location.like(f"%{location}%"),
                     booked_hotels.c.price >= min_check,
                     booked_hotels.c.price <= max_check,
-                    Hotels.services.contains([service])
+                    Hotels.services.contains(input_services)
+
                 )
             )
             .group_by(Hotels.id, booked_hotels.c.hotel_id)

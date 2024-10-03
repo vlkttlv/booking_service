@@ -1,14 +1,11 @@
 from datetime import date
-from typing import List
 from sqlalchemy import and_, func, or_, select
 
 from app.booking.models import Bookings
 from app.dao.base import BaseDAO
-from app.hotels.models import Hotels
+from app.hotels.models import Hotels, HotelsImages
 from app.database import async_session_maker
 from app.hotels.rooms.models import Rooms
-
-from fastapi import Query
 
 
 class HotelDAO(BaseDAO):
@@ -74,3 +71,8 @@ class HotelDAO(BaseDAO):
         async with async_session_maker() as session:
             hotels_with_rooms = await session.execute(get_hotels_with_rooms)
             return hotels_with_rooms.mappings().all()
+
+
+class HotelImagesDAO(BaseDAO):
+
+    model = HotelsImages

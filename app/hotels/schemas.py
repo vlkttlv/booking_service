@@ -1,7 +1,5 @@
 from typing import List
 from pydantic import BaseModel
-from sqlalchemy import JSON
-from app.database import Base
 
 
 class SHotels(BaseModel):
@@ -10,7 +8,7 @@ class SHotels(BaseModel):
     location: str
     services: List[str]
     rooms_quantity: int
-    image_id: int
+    # image_id: str
 
 
 class SHotelInfo(SHotels):
@@ -24,6 +22,4 @@ class SHotelAdd(BaseModel):
     name: str
     location: str
     services: List[str]
-    rooms_quantity: int
-    # image_id: int
     rooms_quantity: int

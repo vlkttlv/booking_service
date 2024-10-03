@@ -2,7 +2,7 @@ from datetime import date, datetime
 from typing import List
 from fastapi import APIRouter, Depends, Query
 from app.exceptions import IncorrectRoleException, WrongDateFrom
-from app.hotels.dao import HotelDAO
+from app.hotels.dao import HotelDAO, HotelImagesDAO
 from app.hotels.schemas import SHotelAdd, SHotelInfo
 from fastapi_cache.decorator import cache
 
@@ -42,12 +42,14 @@ async def add_hotel(hotel_data: SHotelAdd, user: Users = Depends(get_current_use
     """Добавление отеля. Доступно только администраторам"""
     if user.role != "admin":
         raise IncorrectRoleException
-    return await HotelDAO.add(
+    new_hotel_id = await HotelDAO.add(
         name=hotel_data.name,
         location=hotel_data.location,
         services=hotel_data.services,
         rooms_quantity=hotel_data.rooms_quantity,
     )
+    for i in range(1, 4):
+        await HotelImagesDAO.add(hotel_id=new_hotel_id, image_id=i)
 
 
 # @router.get("/id/{hotel_id}", include_in_schema=True)

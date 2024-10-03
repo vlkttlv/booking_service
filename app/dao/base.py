@@ -47,9 +47,11 @@ class BaseDAO:
         Добавляет запись в БД
         '''
         async with async_session_maker() as session:
-            query = insert(cls.model).values(**data)
-            await session.execute(query)
+            query = insert(cls.model).values(**data).returning(cls.model.id)
+            res = await session.execute(query)
             await session.commit()  # фиксирует изменения в БД, обязательно
+        new_id = res.scalar()  # Получаем id новой записи
+        return new_id  # Возвращаем id
 
     @classmethod
     async def delete(cls, **filter_by):

@@ -40,7 +40,7 @@ class Settings(BaseSettings):
         return f"postgresql+asyncpg://{self.TEST_DB_USER}:{self.TEST_DB_PASS}@{self.TEST_DB_HOST}:{self.TEST_DB_PORT}/{self.TEST_DB_NAME}"
 
     class Config:  # настройки будут загружаться из файла .env
-        env_file = ".env"
+        env_file = "backend/.env"
 
 
 settings = Settings()  # содержит значения настроек из файла .env

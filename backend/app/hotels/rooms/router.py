@@ -1,11 +1,11 @@
 from datetime import date
 from fastapi import APIRouter, Depends
 
-from app.exceptions import IncorrectRoleException
-from app.hotels.rooms.dao import RoomDAO, RoomImagesDAO
-from app.hotels.rooms.schemas import SRoomAdd
-from app.users.dependencies import get_current_user
-from app.users.models import Users
+from backend.app.exceptions import IncorrectRoleException
+from backend.app.hotels.rooms.dao import RoomDAO, RoomImagesDAO
+from backend.app.hotels.rooms.schemas import SRoomAdd
+from backend.app.users.dependencies import get_current_user
+from backend.app.users.models import Users
 
 
 router = APIRouter(prefix="/hotels", tags=['Отели'])

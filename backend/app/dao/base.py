@@ -1,5 +1,5 @@
 from sqlalchemy import delete, select, insert
-from app.database import async_session_maker
+from backend.app.database import async_session_maker
 
 # DAO - Data Access Object;  абстрагируем работу с БД
 

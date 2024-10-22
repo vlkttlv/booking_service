@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
-import jwt
-from passlib.context import CryptContext
+from backend.app.users.dao import UsersDAO
+from backend.app.exceptions import IncorrectEmailOrPasswordException
+from backend.app.config import settings
 from pydantic import EmailStr
-from app.config import settings
-from app.exceptions import IncorrectEmailOrPasswordException
-from app.users.dao import UsersDAO
+from passlib.context import CryptContext
+import jwt
+from datetime import datetime, timedelta
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

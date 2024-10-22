@@ -8,18 +8,18 @@ from fastapi_versioning import VersionedFastAPI, version
 
 from redis import asyncio as aioredis
 from sqladmin import Admin
-from app.config import settings
-from app.admin.views import HotelsAdmin, RoomsAdmin, UsersAdmin, BookingsAdmin
-from app.booking.router import router as router_bookings
-from app.users.models import Users
-from app.users.router import router as router_users
-from app.hotels.router import router as router_hotels
-from app.pages.router import router as router_pages
-from app.images.router import router as router_images
-from app.hotels.rooms.router import router as router_rooms
-from app.database import engine
-from app.admin.auth import authentication_backend
-from app.logger import logger
+from backend.app.config import settings
+from backend.app.admin.views import HotelsAdmin, RoomsAdmin, UsersAdmin, BookingsAdmin
+from backend.app.booking.router import router as router_bookings
+from backend.app.users.models import Users
+from backend.app.users.router import router as router_users
+from backend.app.hotels.router import router as router_hotels
+from backend.app.pages.router import router as router_pages
+from backend.app.images.router import router as router_images
+from backend.app.hotels.rooms.router import router as router_rooms
+from backend.app.database import engine
+from backend.app.admin.auth import authentication_backend
+from backend.app.logger import logger
 app = FastAPI()
 # Добавить доп фильтрацию для поиска комнат
 # добавить роль админа
@@ -76,4 +76,4 @@ admin.add_view(UsersAdmin)
 admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
 admin.add_view(BookingsAdmin)
-app.mount("/static", StaticFiles(directory="app/static"), "static")
+app.mount("/static", StaticFiles(directory="backend/app/static"), "static")

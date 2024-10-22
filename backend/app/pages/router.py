@@ -50,9 +50,9 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.booking.router import add_booking, get_bookings
-from app.hotels.rooms.router import get_rooms
-from app.hotels.router import get_hotel_by_id, get_hotels
+from backend.app.booking.router import add_booking, get_bookings
+from backend.app.hotels.rooms.router import get_rooms
+from backend.app.hotels.router import get_hotel_by_id, get_hotels
 
 
 def get_month_days(date: datetime = datetime.today()):

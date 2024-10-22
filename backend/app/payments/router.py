@@ -3,8 +3,8 @@ import os
 import stripe
 from fastapi import Depends, responses, Request, HTTPException, APIRouter
 
-from app.users.dependencies import get_current_user
-from app.users.models import Users
+from backend.app.users.dependencies import get_current_user
+from backend.app.users.models import Users
 from config import settings
 
 router = APIRouter(

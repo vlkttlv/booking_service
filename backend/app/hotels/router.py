@@ -1,13 +1,13 @@
 from datetime import date, datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
-from app.exceptions import IncorrectRoleException, WrongDateFrom
-from app.hotels.dao import HotelDAO, HotelImagesDAO
-from app.hotels.schemas import SHotelAdd, SHotelInfo, SHotels
+from backend.app.exceptions import IncorrectRoleException, WrongDateFrom
+from backend.app.hotels.dao import HotelDAO, HotelImagesDAO
+from backend.app.hotels.schemas import SHotelAdd, SHotelInfo, SHotels
 from fastapi_cache.decorator import cache
 
-from app.users.dependencies import get_current_user
-from app.users.models import Users
+from backend.app.users.dependencies import get_current_user
+from backend.app.users.models import Users
 
 router = APIRouter(prefix="/hotels", tags=["Отели и Комнаты"])
 

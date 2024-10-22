@@ -1,11 +1,11 @@
 from datetime import date
 from sqlalchemy import and_, func, or_, select
 
-from app.booking.models import Bookings
-from app.database import async_session_maker
-from app.dao.base import BaseDAO
+from backend.app.booking.models import Bookings
+from backend.app.database import async_session_maker
+from backend.app.dao.base import BaseDAO
 
-from app.hotels.rooms.models import Rooms, RoomsImages
+from backend.app.hotels.rooms.models import Rooms, RoomsImages
 
 
 class RoomDAO(BaseDAO):

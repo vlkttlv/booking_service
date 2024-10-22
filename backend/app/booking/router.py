@@ -3,14 +3,14 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import parse_obj_as
 from sqlalchemy import delete, select
 from fastapi_versioning import version
-from app.booking.dao import BookingDAO
-from app.database import async_session_maker
-from app.booking.models import Bookings
-from app.booking.schemas import SBooking
-from app.exceptions import RoomCannotBeBooked
-from app.tasks.tasks import send_booking_confirmation_email
-from app.users.dependencies import get_current_user
-from app.users.models import Users
+from backend.app.booking.dao import BookingDAO
+from backend.app.database import async_session_maker
+from backend.app.booking.models import Bookings
+from backend.app.booking.schemas import SBooking
+from backend.app.exceptions import RoomCannotBeBooked
+from backend.app.tasks.tasks import send_booking_confirmation_email
+from backend.app.users.dependencies import get_current_user
+from backend.app.users.models import Users
 
 router = APIRouter(
     prefix="/bookings",

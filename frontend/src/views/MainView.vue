@@ -1,5 +1,4 @@
 <template>
-
     <html>
     <body>
       <div class="search-container">

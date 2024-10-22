@@ -134,22 +134,28 @@ nav a:first-of-type {
 <template>
   <body>
     <header>
-      <a href="http://localhost:5173/">
-
-        <div class="logo">Набронировал</div>
+      <a class="navbar-brand" href="#" @click="onClickLogo">
+      <div class="logo">Набронировал</div>
       </a>
         <nav class="user-actions">
           <RouterLink to="/Register">Вход/Регистрация</RouterLink>
           <RouterLink to="/Login">Мои брони (логин)</RouterLink>
         </nav>
     </header>
-
   <main>
     <RouterView />
   </main>
   </body>
 </template>
-
+<script>
+export default {
+  methods: {
+    onClickLogo() {
+      this.$router.push('/'); // Переход на домашнюю страницу
+    }
+  }
+};
+</script>
 <style>
 
   body {
@@ -167,9 +173,9 @@ nav a:first-of-type {
     align-items: center;
   }
   .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-      }
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
   .user-actions {
         display: flex;
         gap: 1rem;

@@ -1,5 +1,5 @@
 <template>
-    <div class="login">
+    <div class="register">
       <h1>Регистрация</h1>
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
@@ -24,7 +24,7 @@
       </form>
       <p v-if="message">{{ message }}</p>
       <div class="login">
-       Уже есть аккаунт?<RouterLink to="/Login">Войти</RouterLink>
+       Уже есть аккаунт? <RouterLink to="/Login">Войти</RouterLink>
        </div>
 
 
@@ -55,7 +55,7 @@
   </script>
   
   <style scoped>
-  .login {
+  .register {
     max-width: 400px;
     margin: auto;
     padding: 1em;
@@ -99,6 +99,9 @@
   p {
     margin-top: 1em;
     color: rgb(0, 0, 0);
+  }
+  .login {
+    margin-top: 10px;
   }
   </style>
   

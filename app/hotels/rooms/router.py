@@ -24,3 +24,7 @@ async def add_room(room_data: SRoomAdd, user: Users = Depends(get_current_user))
                                     sevices=room_data.services, quantity=room_data.quantity, price=room_data.price)
     for i in range(1, 4):
         await RoomImagesDAO.add(room_id=new_room_id, image_id=i)
+
+
+async def get_rooms_images(room_id: int):
+    return await RoomImagesDAO.find_all(room_id=room_id)

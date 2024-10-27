@@ -16,6 +16,10 @@ body {
     font-size: 1.5rem;
     font-weight: bold;
   }
+  .logo a:link {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: white;
+  }
   .user-actions {
     display: flex;
     gap: 1rem;

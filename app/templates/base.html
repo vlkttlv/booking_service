@@ -5,24 +5,47 @@
     <meta name="viewport"  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% block head %}{% endblock %}
+    <script>
+      async function logoutUser() {
+          const url = "http://127.0.0.1:8000/v1/auth/logout";
+          await fetch(url, {
+              method: 'POST',
+              header: {"Accept": "application/json"}
+          }).then(response => {
+              if (response.status === 200) {
+                  window.location.href = "/v1/pages/main"
+              }
+          });
+      }
+  </script>
+
     <title>Набронировал💸</title>
+    <style>
+      .logo a {
+          text-decoration: none; 
+          color: #ffffff;
+      }
+  </style>
 </head>
 <body>
 <header>
-  <div class="logo">Набронировал💸</div>
-  {% if not current_user%} 
-  <div class="user-actions">
-    <button id="my-bookings">Мои брони</button>
-    <button id="login-register">Вход/регистрация</button>
+    <div class="logo">
+      <a href="/v1/pages/main">
+        Набронировал💸
+      </a>
   </div>
-  {% else %}
+
   <div class="user-actions">
-    <button id="my-bookings">Мои брони</button>
-    <button id="login-register">Выход</button>
+    <form action="/v1/pages/bookings">
+      <button id="my-bookings">Мои брони</button>
+    </form>
+    <form action="/v1/pages/auth/login">
+      <button type="submit" id="login-register">Вход/регистрация</button>
+    </form>
+    <button onclick="logoutUser()">Выйти</button>
+    </form>
   </div>
-  {% endif %}
 </header>
-</nav>
 {% block content %}{% endblock %}
 </body>
 </html>

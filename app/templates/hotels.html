@@ -1,9 +1,12 @@
 {% extends "base.html" %}
-{% extends "main.html" %}
-
-
 
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='style/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='style/bookings.css') }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     const searchForOperation = () => {
         const searchInputValue = document.getElementById("operation_search").value;
@@ -20,61 +23,78 @@
         window.location.href = `/pages/hotels/${hotel_id}/rooms?date_from=${dateFromSelectValue}&date_to=${dateToSelectValue}`;
     }
 </script>
+
 {% endblock %}
 
 {% block content %}
+<!-- <div class="search-container">
+    <form id="hotel-search">
+      <input type="text" id="search" placeholder="Введите название города или отеля">
+      
+      <div class="date-range">
+        <input type="date" id="check-in" required>
+        <input type="date" id="check-out" required>
+      </div>
+      
+      <div class="price-range">
+        <input type="number" id="min-price" placeholder="Мин. цена">
+        <input type="number" id="max-price" placeholder="Макс. цена">
+      </div>
+      
+      <div class="services">
+        <label><input type="checkbox" name="service" value="wifi"> Wi-Fi</label>
+        <label><input type="checkbox" name="service" value="parking"> Парковка</label>
+        <label><input type="checkbox" name="service" value="breakfast"> Завтрак</label>
+        <label><input type="checkbox" name="service" value="pool"> Бассейн</label>
+        <label><input type="checkbox" name="service" value="gym"> Тренажёрный зал</label>
+        <label><input type="checkbox" name="service" value="restaurant"> Кондиционер в номере</label>
+      </div>
+      
+      <button type="submit" class="search-button">Найти отели</button>
+    </form>
+  </div> -->
 <div>
-    <div class="flex justify-center items-center mb-10">
-        <div class="border-2 border-yellow-400 rounded-3xl w-1/4 text-lg px-3 py-1 mr-2">
-            <input id="operation_search" size="34" type="text" value="{{ location }}"
-                   placeholder="Введите место, которое хотели бы посетить...">
-        </div>
-        <span>С</span>
-        <select id="date_from" class="p-2 mx-2">
-            {% for date in dates %}
-                <option value="{{ date['date'] }}" {{ 'selected' if date['date_formatted'] == date_from }}>
-                    {{ date["date_formatted"] }}
-                </option>
-            {% endfor %}
-        </select>
-        <span>По</span>
-        <select id="date_to" class="p-2 mx-2">
-            {% for date in dates %}
-                <option value="{{ date['date'] }}" {{ 'selected' if date['date_formatted'] == date_to or date == dates[-1] }}>
-                    {{ date["date_formatted"] }}
-                </option>
-            {% endfor %}
-        </select>
-        <button onclick="searchForOperation()"
-                class="text-xl bg-yellow-400 px-3 py-1 rounded-3xl">Найти</button>
-    </div>
     {% if hotels %}
-        <div class="flex flex-col items-center">
+    <div class="hotel-list"> 
             {% for hotel in hotels %}
-                <div class="flex shadow-md mb-5 w-fit pr-4 items-center">
-                    <img src="{{ url_for('static', path='images/' + hotel.image_id|string + '.webp') }}" alt="Отель" width="300">
-                    <div class="px-4 py-3">
-                        <div class="pl-1 font-bold">{{ hotel.name }}</div>
-                        <hr class="my-2">
-                        <div class="mb-2 pl-1 max-w-xs">{{ hotel.description }}</div>
-                        <div class="mb-2">📍{{ hotel.location }}</div>
-                        <div class="mb-2 pl-1">{{ " · ".join(hotel.services) }}</div>
-                        <div class="pl-1">Осталось номеров: {{ hotel.rooms_left }} из {{hotel.rooms_quantity}}</div>
-                    </div>
-                    <div class="flex justify-top flex-col items-center py-3">
-                        <div>
-                            от
-                            <span class="font-bold text-3xl">25 999</span>
+            <div class="hotel-card">
+                <div class="hotel-images">
+                    <div id="carouselExample" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                            <img src="{{ url_for('static', path='images/hotels/' + hotel.id|string + '_1.webp') }}" alt="image_1" class="d-block w-100" width="200" height="200">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="{{ url_for('static', path='images/hotels/' + hotel.id|string + '_2.webp') }}" alt="image_2" class="d-block w-100" width="200" height="200">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="{{ url_for('static', path='images/hotels/' + hotel.id|string + '_3.webp') }}" alt="image_3" class="d-block w-100" width="200" height="200">
+                          </div>
                         </div>
-                        <span class="mb-5">за 12 ночей</span>
-                        <button onclick="exploreHotelRooms('{{ hotel.id }}')"
-                                class="text-lg bg-yellow-400 px-3 py-1 rounded-3xl">
+                        <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a>
+                      </div>
+                </div>
+                <div class="hotel-info">
+                    <h2 class="hotel-name">{{ hotel.name }}</h2>
+                    <div>📍 {{ hotel.location }}</div>
+                    <div>{{ " · ".join(hotel.services) }}</div>
+                    <div>Осталось номеров: {{ hotel.rooms_left }} из {{hotel.rooms_quantity}}</div>
+                    <button onclick="exploreHotelRooms('{{ hotel.id }}')"
+                                class="book-button">
                             Выбрать номер
                         </button>
-                    </div>
-                </div>
+                  </div>
+            </div>
             {% endfor %}
         </div>
+        
     {% else %}
     <p>Упс, отели не найдены...</p>
     {% endif %}

@@ -10,7 +10,6 @@ class SRoom(BaseModel):
     services: List[str]
     price: int
     quantity: int
-    # image_id: int
 
     class Config:
         orm_mode = True

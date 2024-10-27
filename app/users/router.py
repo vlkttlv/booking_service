@@ -30,14 +30,6 @@ async def login_user(response: Response, user_data: SUserAuth):
         raise IncorrectEmailOrPasswordException
     access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("booking_access_token", access_token, httponly=True)
-    #     headers = {
-    #     'Access-Control-Allow-Origin': '*',
-    #     'Access-Control-Allow-Credentials': 'true',
-    #     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    #     'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept',
-    # }
-    # response = JSONResponse(content={"access_token": access_token}, headers=headers)
-    # return response
     return {"access_token": access_token}
 
 

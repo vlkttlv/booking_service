@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='style/main.css') }}">
+{% endblock %}
+
+{% block content %}
+<html>
+    <body>
+      <div class="search-container">
+        <form id="hotel-search">
+          <input type="text" id="search" placeholder="Введите название города или отеля">
+          
+          <div class="date-range">
+            <input type="date" id="check-in" required>
+            <input type="date" id="check-out" required>
+          </div>
+          
+          <div class="price-range">
+            <input type="number" id="min-price" placeholder="Мин. цена">
+            <input type="number" id="max-price" placeholder="Макс. цена">
+          </div>
+          
+          <div class="services">
+            <label><input type="checkbox" name="service" value="wifi"> Wi-Fi</label>
+            <label><input type="checkbox" name="service" value="parking"> Парковка</label>
+            <label><input type="checkbox" name="service" value="breakfast"> Завтрак</label>
+            <label><input type="checkbox" name="service" value="pool"> Бассейн</label>
+            <label><input type="checkbox" name="service" value="gym"> Спортзал</label>
+            <label><input type="checkbox" name="service" value="restaurant"> Ресторан</label>
+          </div>
+          
+          <button type="submit" class="search-button">Найти отели</button>
+        </form>
+      </div>
+
+    </body>
+    </html>
+{% endblock %}

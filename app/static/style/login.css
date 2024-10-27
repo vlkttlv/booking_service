@@ -1,0 +1,49 @@
+
+    .login {
+    max-width: 400px;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    align-items: center;
+    display: block;
+    margin-top: 50px;
+  }
+  
+  .form-group {
+    margin-bottom: 1em;
+  }
+  
+  label {
+    margin-bottom: .5em;
+    color: #333333;
+    display: block;
+  }
+  
+  input {
+    border: 1px solid #CCCCCC;
+    padding: .5em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  button {
+    padding: .5em;
+    color: white;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  p {
+    margin-top: 1em;
+    color: rgb(0, 0, 0);
+  }
+  .register {
+    margin-top: 10px;
+  }

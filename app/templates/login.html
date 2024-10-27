@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='style/login.css') }}">
+    <script>
+        async function loginUser() {
+           const url = "http://127.0.0.1:8000/v1/auth/login";
+           const data = {
+           email: document.getElementById("email").value,
+           password: document.getElementById("password").value,
+           };
+           const wrongCredentialsSpan = document.getElementById("wrong_credentials");
+           wrongCredentialsSpan.textContent = "";
+            await fetch(url, {
+                method: 'POST',
+                headers: {'Accept': 'application/json','Content-Type': 'application/json'},
+                body: JSON.stringify(data),
+            }).then(response => {
+                if (response.status === 200) {
+                    window.location.href = "/v1/pages/main"
+                }
+                else{
+                    wrongCredentialsSpan.textContent = "Неверный email или пароль";
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="login">
+    <h1>Войти в аккаунт</h1>
+        <div>
+            <div class="flex flex-col items-start text-xl mb-5">
+                <label for="email" class="mb-1">Email</label>
+                <input id="email" name="email" type="text" value="" placeholder="test@test.ru">
+
+                <label for="password" class="mb-1">Пароль</label>
+                <input id="password" name="password" type="password" value="" placeholder="********">
+                <span id="wrong_credentials" class="text-sm text-red-400"></span>
+            </div>
+        </div>
+      <button onclick="loginUser()">Войти</button>
+
+    <div class="register">
+    Нет аккаунта?
+      <a href="/v1/pages/auth/register"
+      class="underline text-blue-600 hover:text-blue-800 visited:text-blue-600">
+       Зарегистрироваться
+   </a>
+    </div>
+  </div>
+{% endblock %}

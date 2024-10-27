@@ -6,10 +6,9 @@ from fastapi.templating import Jinja2Templates
 from app.exceptions import BookingException
 from app.hotels.rooms.router import get_rooms
 from app.hotels.router import get_hotels
-from app.users.dependencies import get_current_user
+from app.pages.utils import get_current_user
 
 from app.booking.router import get_bookings
-from app.users.models import Users
 # from app.hotels.rooms.router import get_rooms
 # from app.hotels.router import get_hotel_by_id, get_hotels
 
@@ -23,15 +22,8 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/main", response_class=HTMLResponse)
-async def get_hotels_pages(request: Request):
-    try:
-        current_user: Users = Depends(get_current_user)
-        if current_user.role == "user":
-            return templates.TemplateResponse(name="main.html", context={"request": request, "role": "user"})
-        else:
-            return templates.TemplateResponse(name="main.html", context={"request": request, "role": "admin"})
-    except BookingException as e:
-        return templates.TemplateResponse(name="main.html", context={"request": request, "role": "user"})
+async def get_hotels_pages(request: Request, user_info=Depends(get_current_user)):
+    return templates.TemplateResponse(name="main.html", context={"request": request, "role": user_info})
 
 
 @router.get("/hotels")

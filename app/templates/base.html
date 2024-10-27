@@ -39,6 +39,11 @@
     <form action="/v1/pages/bookings">
       <button id="my-bookings">Мои брони</button>
     </form>
+    {% if role == "admin" %}
+    <form action="/v1/pages/auth/login">
+      <button type="submit" id="login-register">Добавить комнату/отель</button>
+    </form>
+    {% endif %}
     <form action="/v1/pages/auth/login">
       <button type="submit" id="login-register">Вход/регистрация</button>
     </form>

@@ -9,7 +9,7 @@ from fastapi_versioning import VersionedFastAPI, version
 from redis import asyncio as aioredis
 from sqladmin import Admin
 from app.config import settings
-from app.admin.views import HotelsAdmin, RoomsAdmin, UsersAdmin, BookingsAdmin
+from app.admin.views import HotelsAdmin, PaymentsAdmin, RoomsAdmin, UsersAdmin, BookingsAdmin
 from app.booking.router import router as router_bookings
 from app.users.models import Users
 from app.users.router import router as router_users
@@ -17,6 +17,7 @@ from app.hotels.router import router as router_hotels
 from app.pages.router import router as router_pages
 from app.images.router import router as router_images
 from app.hotels.rooms.router import router as router_rooms
+from app.payments.router import router as router_payment
 from app.database import engine
 from app.admin.auth import authentication_backend
 from app.logger import logger
@@ -48,6 +49,7 @@ app.include_router(router_hotels)
 app.include_router(router_pages)
 app.include_router(router_images)
 app.include_router(router_rooms)
+app.include_router(router_payment)
 
 # @app.on_event("startup")
 # async def startup():
@@ -83,4 +85,5 @@ admin.add_view(UsersAdmin)
 admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
 admin.add_view(BookingsAdmin)
+admin.add_view(PaymentsAdmin)
 app.mount("/static", StaticFiles(directory="app/static"), "static")

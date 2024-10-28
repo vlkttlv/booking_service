@@ -3,6 +3,7 @@ from sqladmin import ModelView
 from app.booking.models import Bookings
 from app.hotels.models import Hotels
 from app.hotels.rooms.models import Rooms
+from app.payments.models import Payments
 from app.users.models import Users
 
 
@@ -34,3 +35,9 @@ class RoomsAdmin(ModelView, model=Rooms):
     name = "Комната"
     name_plural = "Комнаты"
     icon = "fa-solid fa-bed"
+
+
+class PaymentsAdmin(ModelView, model=Payments):
+    column_list = [c.name for c in Payments.__table__.c]
+    name = "Оплата"
+    name_plural = "Оплата"

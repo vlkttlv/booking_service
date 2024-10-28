@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import and_, func, insert, or_, select
+from sqlalchemy import and_, func, insert, or_, select, update
 from sqlalchemy.exc import SQLAlchemyError
 from app.dao.base import BaseDAO
 from app.booking.models import Bookings
@@ -106,3 +106,14 @@ class BookingDAO(BaseDAO):
                      "date_from": date_from,
                      "date_to": date_to}
             logger.error(msg, extra=extra, exc_info=True)
+
+    @classmethod
+    async def update_table(cls, booking_id: int):
+        '''
+        Обновляет запись в БД по условию
+        '''
+        async with async_session_maker() as session:
+            query = update(cls.model).where(
+                cls.model.id == booking_id).values(payment_status="paid")
+            await session.execute(query)
+            await session.commit()

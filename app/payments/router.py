@@ -1,9 +1,7 @@
-from datetime import datetime
-import json
-import os
-from pydantic import parse_obj_as
 import stripe
-from fastapi import Depends, responses, Request, HTTPException, APIRouter
+from datetime import datetime
+from pydantic import parse_obj_as
+from fastapi import Depends, HTTPException, APIRouter
 
 from app.booking.dao import BookingDAO
 from app.booking.schemas import SBooking
@@ -11,8 +9,8 @@ from app.payments.dao import PaymentDAO
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 from app.config import settings
-from app.payments.schemas import PaymentData
 from app.tasks.tasks import send_pay_confirmation_email
+
 router = APIRouter(
     prefix="/payments",
     tags=["Оплата"]

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='style/pay.css') }}">
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Инициализация Stripe
+    const stripe = Stripe('pk_test_51Q64pzEfHbwG18yBRwBfKOIMw3VLVXjyjxDFCtlRtldBVij97WQPLsJ5IFHj3PTuQ2AuiuMbg6wfKsYkgxy7TvOB004PNO55h9'); // Замените на ваш публичный ключ
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+        hidePostalCode: true,
+    });
+    cardElement.mount('#card-element');
+
+    // Обработка формы отправки
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const {paymentMethod, error} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
+
+        if (error) {
+            // Показываем ошибку пользователю
+            document.getElementById('card-errors').textContent = error.message;
+        } else {
+            // Вы можете отправить paymentMethod.id на сервер
+            const response = await fetch('/pay', { // Путь к вашему серверному обработчику
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: paymentMethod.id,
+                    booking_id: YOUR_BOOKING_ID, // Замените на нужный ID
+                }),
+            });
+const data = await response.json();
+            if (response.ok) {
+                alert('Оплата успешна!');
+            } else {
+                alert('Ошибка: ' + data.detail);
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container">
+        <form id="payment-form">
+            <div class="form-group">
+                <label for="card-number">Номер карты:</label>
+                <input type="text" id="card-number" name="card-number" required placeholder="4242 4242 4242 4242">
+            </div>
+            <div class="form-group">
+                <label for="expiry-month">Месяц:</label>
+                <select id="expiry-month" name="expiry-month" required>
+                    <option value="">Выберите месяц</option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="expiry-year">Год:</label>
+                <select id="expiry-year" name="expiry-year" required>
+                    <option value="">Выберите год</option>
+                    <script>
+                        const currentYear = new Date().getFullYear();
+                        for (let i = 0; i <= 7; i++) {
+                            document.write(`<option value="${currentYear + i}">${currentYear + i}</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cvc">CVC:</label>
+                <input type="text" id="cvc" name="cvc" required placeholder="123">
+            </div>
+            <button type="submit">Оплатить</button>
+        </form>
+    </div>
+</body>
+{% endblock %}

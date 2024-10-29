@@ -22,6 +22,7 @@
 
 {% block content %}
 <div>
+  <h3 style="padding-left: 15px; margin-top: 10px;">  Свободные отели с {{date_from}} по {{date_to}}:</h3>
     {% if hotels %}
     <div class="hotel-list"> 
             {% for hotel in hotels %}

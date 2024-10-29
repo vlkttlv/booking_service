@@ -4,6 +4,11 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{ url_for('static', path='style/bookings.css') }}">
 <script>
+   const payBooking = (event, booking_id) => {
+       event.preventDefault();
+       window.location.href = `/v1/pages/payments/pay?booking_id=${booking_id}`;
+   }
+
     async function deleteBooking(booking_id) {
       const bookingId = document.getElementById("bookingId").value;
       const url = "http://127.0.0.1:8000/v1/bookings/" + booking_id;
@@ -14,8 +19,6 @@
                   if (response.status === 200) {
                     window.location.href = "/pages/bookings"
                     alert('Бронь удалена. Обновите страницу');}
-                    
-                  
                     })
                   };
 </script>
@@ -86,7 +89,7 @@
             <span hidden id="bookingId">{{ booking.id }}</span>
         </div>
         {% if booking.payment_status == "not paid" %}
-        <button class="book-button">Оплатить</button>
+        <button onclick="payBooking(event, '{{booking.id}}')" class="book-button">Оплатить</button>
         {% endif %}
         <button onclick="deleteBooking('{{ booking.id }}')" class="book-button">Отменить бронь</button>
       </div>

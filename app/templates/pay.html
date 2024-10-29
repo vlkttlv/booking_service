@@ -4,47 +4,6 @@
 <link rel="stylesheet" href="{{ url_for('static', path='style/pay.css') }}">
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Инициализация Stripe
-    const stripe = Stripe('pk_test_51Q64pzEfHbwG18yBRwBfKOIMw3VLVXjyjxDFCtlRtldBVij97WQPLsJ5IFHj3PTuQ2AuiuMbg6wfKsYkgxy7TvOB004PNO55h9'); // Замените на ваш публичный ключ
-    const elements = stripe.elements();
-    const cardElement = elements.create('card', {
-        hidePostalCode: true,
-    });
-    cardElement.mount('#card-element');
-
-    // Обработка формы отправки
-    const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const {paymentMethod, error} = await stripe.createPaymentMethod({
-            type: 'card',
-            card: cardElement,
-        });
-
-        if (error) {
-            // Показываем ошибку пользователю
-            document.getElementById('card-errors').textContent = error.message;
-        } else {
-            // Вы можете отправить paymentMethod.id на сервер
-            const response = await fetch('/pay', { // Путь к вашему серверному обработчику
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    token: paymentMethod.id,
-                    booking_id: YOUR_BOOKING_ID, // Замените на нужный ID
-                }),
-            });
-const data = await response.json();
-            if (response.ok) {
-                alert('Оплата успешна!');
-            } else {
-                alert('Ошибка: ' + data.detail);
-            }
-        }
-    });
 </script>
 {% endblock %}
 

@@ -16,11 +16,6 @@ router = APIRouter(
 templates = Jinja2Templates(directory="app/templates")
 
 
-@router.get("/", response_class=HTMLResponse)
-async def base(request: Request):
-    return templates.TemplateResponse(name="base.html", context={"request": request})
-
-
 @router.get("/main", response_class=HTMLResponse)
 async def get_hotels_pages(request: Request):
     return templates.TemplateResponse(name="main.html", context={"request": request})
@@ -34,11 +29,6 @@ async def register(request: Request):
 @router.get("/auth/login", response_class=HTMLResponse)
 async def login(request: Request):
     return templates.TemplateResponse(name="login.html", context={"request": request})
-
-
-# @router.get("/hotels")
-# async def get_hotels_pages(request: Request, hotels=Depends(get_hotels)):
-#     return templates.TemplateResponse(name="hotels.html", context={"request": request, "hotels": hotels})
 
 
 @router.get("/hotels/{location}", response_class=HTMLResponse)

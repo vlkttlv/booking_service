@@ -20,14 +20,14 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 @router.post("/pay")
-async def pay(token: str, booking_id: int, user: Users = Depends(get_current_user)):
+async def pay(booking_id: int, user: Users = Depends(get_current_user)):
     # Создаем платеж в Stripe
     try:
         booking = await BookingDAO.find_one_or_none(id=booking_id)
         charge = stripe.Charge.create(
             amount=booking.price,
             currency='rub',
-            source=token,
+            source="tok_visa",
             description='Бронирование отеля',
         )
     except Exception as e:

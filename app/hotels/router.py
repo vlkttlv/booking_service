@@ -23,7 +23,7 @@ async def get_hotels(
         description=f"Например, {
             datetime.now().date()}",
     ),
-    service: str = Query(
+    services: str = Query(
         "Парковка", description="Вводите услуги через пробел"
     ),
     min_check: int = 0,
@@ -33,7 +33,7 @@ async def get_hotels(
     if date_from >= date_to:
         raise WrongDateFrom
     return await HotelDAO.find_all_by_location_and_date(
-        location, date_from, date_to, service, min_check, max_check
+        location, date_from, date_to, services, min_check, max_check
     )
 
 

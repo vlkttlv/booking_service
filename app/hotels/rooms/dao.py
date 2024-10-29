@@ -12,7 +12,7 @@ class RoomDAO(BaseDAO):
     model = Rooms
 
     @classmethod
-    async def find_all_rooms(cls, hotel_id: int, date_from: date, date_to: date):
+    async def find_all_rooms(cls, hotel_id: int, date_from: date, date_to: date, min_check: int = 0, max_check: int = 100):
         async with async_session_maker() as session:
             booked_rooms = (select(Bookings.room_id, func.count(Bookings.room_id).label("rooms_booked"))
                             .select_from(Bookings)
@@ -39,7 +39,9 @@ class RoomDAO(BaseDAO):
             )
                 .join(booked_rooms, booked_rooms.c.room_id == Rooms.id, isouter=True)
                 .where(
-                Rooms.hotel_id == hotel_id
+                Rooms.hotel_id == hotel_id,
+                Rooms.price >= min_check,
+                Rooms.price <= max_check,
             )
             )
 

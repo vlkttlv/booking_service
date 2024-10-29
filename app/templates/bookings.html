@@ -4,10 +4,24 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{ url_for('static', path='style/bookings.css') }}">
 <script>
+    async function deleteBooking(booking_id) {
+      const bookingId = document.getElementById("bookingId").value;
+      const url = "http://127.0.0.1:8000/v1/bookings/" + booking_id;
+      await fetch(url, {
+              method: 'DELETE',
+              headers: {'Accept': 'accept: */*'}, 
+      }).then(response => {
+                  if (response.status === 200) {
+                    window.location.href = "/pages/bookings"
+                    alert('Бронь удалена. Обновите страницу');}
+                    
+                  
+                    })
+                  };
+</script>
+<script>
     async function loginUser() {
-        const url = "http://localhost:8000/api/v1/auth/logout";
-        const bookingId = document.getElementById("bookingId").value;
-        
+        const url = "http://localhost:8000/api/v1/auth/logout";        
         await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'}, 
@@ -28,10 +42,10 @@
 {% endblock %}
 
 {% block content %}
+{% if bookings %}
 <div class="hotel-list"> 
     {% for booking in bookings %}
     <div class="hotel-card">
-
         <div class="hotel-images">
             <div id="carouselExample" class="carousel slide" data-ride="carousel">
               <div class="carousel-inner">
@@ -55,7 +69,6 @@
               </a>
             </div>
           </div>
-
       <div class="hotel-info">
         <h2 class="hotel-name">{{ booking.name }}</h2>
         {% if booking.description %}
@@ -72,44 +85,19 @@
             <span>за {{ booking.total_days }} ночей</span>
             <span hidden id="bookingId">{{ booking.id }}</span>
         </div>
-        <button class="book-button">Отменить бронь</button>
+        {% if booking.payment_status == "not paid" %}
+        <button class="book-button">Оплатить</button>
+        {% endif %}
+        <button onclick="deleteBooking('{{ booking.id }}')" class="book-button">Отменить бронь</button>
       </div>
 
     </div>
     {% endfor %}
   </div>
-
-<!-- 
-<div class="flex flex-col items-center">
-    {% for booking in bookings %}
-        <div>
-            <div class="text-2xl font-bold mb-5">
-                <span>{{ booking.hotel_name }}</span>
-            </div>
-            <div class="flex shadow-md mb-5 w-fit pr-4">
-                <img src="{{ url_for('static', path='images/' + booking.image_id|string + '.webp') }}" alt="Комната" width="250">
-                <div class="px-4 py-3">
-                    <div class="pl-1 font-bold">{{ booking.name }}</div>
-                    <hr class="my-2">
-                    {% if booking.description %}
-                        <div class="mb-2 pl-1 max-w-xs">{{ booking.description }}</div>
-                    {% endif %}
-                    <div class="pl-1">{{ " · ".join(booking.services) }}</div>
-                </div>
-                <div class="flex justify-top flex-col items-center">
-                    <span>✅ Забронировано</span>
-                    <span>С {{ booking.date_from }}</span>
-                    <span>По {{ booking.date_to }}</span>
-                    <span class="font-bold text-3xl">{{ booking.total_cost }}</span>
-                    <span class="mb-3">за {{ booking.total_days }} ночей</span>
-                    <span hidden id="bookingId">{{ booking.id }}</span>
-                    <button class="text-lg bg-red-400 px-3 py-1 rounded-3xl mb-4">Отменить бронь</button>
-                </div>
-            </div>
-        </div>
-    {% endfor %} -->
-<!-- </div> -->
-
-
-
+  {% else %}
+  <script>
+    alert('У вас нет бронирований. Перейдите на главную страницу и поищите комнату')
+    window.location.href = "/v1/pages/main"
+  </script>
+  {% endif%}
 {% endblock %}

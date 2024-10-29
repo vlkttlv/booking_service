@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List
 from pydantic import BaseModel
 
@@ -8,11 +9,11 @@ class SHotels(BaseModel):
     location: str
     services: List[str]
     rooms_quantity: int
-    # image_id: str
 
 
 class SHotelInfo(SHotels):
     rooms_left: int
+
 
     class Config:
         from_attributes = True

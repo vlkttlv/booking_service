@@ -12,8 +12,8 @@ router = APIRouter(prefix="/hotels", tags=['Отели и Комнаты'])
 
 
 @router.get("/{hotel_id}/rooms")
-async def get_rooms(hotel_id: int, date_from: date, date_to: date):
-    return await RoomDAO.find_all_rooms(hotel_id, date_from, date_to)
+async def get_rooms(hotel_id: int, date_from: date, date_to: date, min_check: int = 0, max_check: int = 100_000,):
+    return await RoomDAO.find_all_rooms(hotel_id, date_from, date_to, min_check, max_check)
 
 
 @router.post("/{hotel_id}/add_room")

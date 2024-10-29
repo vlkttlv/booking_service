@@ -5,20 +5,31 @@
 <link rel="stylesheet" href="{{ url_for('static', path='style/bookings.css') }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script>
-    const searchForOperation = () => {
-        const searchInputValue = document.getElementById("operation_search").value;
-        const dateFromSelectValue = document.getElementById("date_from").value;
-        const dateToSelectValue = document.getElementById("date_to").value;
-        window.location.href = `/pages/hotels/${searchInputValue}?date_from=${dateFromSelectValue}&date_to=${dateToSelectValue}`;
+        async function bookingRoom(room_id) { 
+          const url = "http://127.0.0.1:8000/v1/bookings"; 
+          const date_from = "{{ date_from }}"; 
+          const date_to = "{{ date_to }}"; 
+          const formData = new FormData();
+          formData.append('room_id', room_id);
+          formData.append('date_from', date_from);
+          formData.append('date_to', date_to);
 
-        window.location.href = `v1/pages/hotels/${searchInputValue}?date_from=${dateFromSelectValue}&date_to=${dateFromSelectValue}&service=Парковка&min_check=0&max_check=100000`
-    }
-
-    const exploreHotelRooms = (hotel_id) => {
-        const dateFromSelectValue = document.getElementById("date_from").value;
-        const dateToSelectValue = document.getElementById("date_to").value;
-        window.location.href = `/pages/hotels/${hotel_id}/rooms?date_from=${dateFromSelectValue}&date_to=${dateToSelectValue}`;
-    }
+          
+          await fetch(url, { 
+              method: 'POST', 
+              headers: {
+                  'Accept': 'application/json',
+              }, 
+              body: formData, 
+          }).then(response => { 
+              if (response.status === 200) { 
+                  alert("Комната забронирована!"); 
+                  window.location.href = "/v1/pages/bookings"; 
+              } else { 
+                  alert("Все комнаты забронированы. Попробуйте позже"); 
+              } 
+          }); 
+}
 </script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -60,9 +71,10 @@
                     <h2 class="hotel-name">{{ room.name }}</h2>
                     <div>{{ room.description }}</div>
                     <div>{{ " · ".join(room.services) }}</div>
-                    <div>{{ room.total_cost }}</div>
+                    <div>💵 Цена за ночь: {{ room.price }}</div>
+                    <div>💰 Всего за {{booking_date}} ночей: {{ room.total_cost }}</div>
                     <div>Осталось номеров: {{ room.rooms_left }} из {{room.quantity}}</div>
-                    <button class="book-button">Забронировать</button>
+                    <button class="book-button" onclick="bookingRoom('{{ room.id }}')">Забронировать</button>
                   </div>
             </div>
             {% endfor %}

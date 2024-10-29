@@ -12,9 +12,11 @@
               headers: {'Accept': 'accept: */*'}, 
       }).then(response => {
                   if (response.status === 200) {
-                    window.location.href = "/pages/bookings"}
-                    alert('Бронь удалена. Обновите страницу :)');
-                    }  )
+                    window.location.href = "/pages/bookings"
+                    alert('Бронь удалена. Обновите страницу');}
+                    
+                  
+                    })
                   };
 </script>
 <script>
@@ -40,6 +42,7 @@
 {% endblock %}
 
 {% block content %}
+{% if bookings %}
 <div class="hotel-list"> 
     {% for booking in bookings %}
     <div class="hotel-card">
@@ -91,4 +94,10 @@
     </div>
     {% endfor %}
   </div>
+  {% else %}
+  <script>
+    alert('У вас нет бронирований. Перейдите на главную страницу и поищите комнату')
+    window.location.href = "/v1/pages/main"
+  </script>
+  {% endif%}
 {% endblock %}

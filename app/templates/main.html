@@ -10,8 +10,8 @@
         const dateFrom = dateFromSelectValue.trimEnd()
         const dateToSelectValue = document.getElementById("check-out").value;
         const dateTo = dateToSelectValue.trimEnd()
-        const minPriceSelectValue = document.getElementById("min-price").value || '';
-        const maxPriceSelectValue = document.getElementById("max-price").value || '';
+        const minPriceSelectValue = document.getElementById("min-price").value || 0;
+        const maxPriceSelectValue = document.getElementById("max-price").value || 100000;
 
               // Получаем все чекбоксы с именем service
       const serviceCheckboxes = document.querySelectorAll('input[name="service"]:checked');
@@ -21,8 +21,11 @@
       serviceCheckboxes.forEach(checkbox => {
           selectedServices.push(checkbox.value);
       });
-      const servicesString = encodeURIComponent(selectedServices.join(" "));
-        // Используем обратные кавычки для шаблонных строк
+      if (!searchInputValue || !dateFromSelectValue || !dateToSelectValue) {
+            alert("Пожалуйста, введите название отеля и дату заезда/выезда.");
+            return; // Выход из функции, если данные не введены
+        }
+      const servicesString = encodeURIComponent(selectedServices.length > 0 ? selectedServices.join(" ") : "Парковка"); 
         window.location.href = `/v1/pages/hotels/${searchInputValue}?date_from=${dateFrom}&date_to=${dateTo}&services=${servicesString}&min_check=${minPriceSelectValue}&max_check=${maxPriceSelectValue}`;
     }
 </script>

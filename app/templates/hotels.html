@@ -8,51 +8,19 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    const searchForOperation = () => {
-        const searchInputValue = document.getElementById("operation_search").value;
-        const dateFromSelectValue = document.getElementById("date_from").value;
-        const dateToSelectValue = document.getElementById("date_to").value;
-        window.location.href = `/pages/hotels/${searchInputValue}?date_from=${dateFromSelectValue}&date_to=${dateToSelectValue}`;
-
-        window.location.href = `v1/pages/hotels/${searchInputValue}?date_from=${dateFromSelectValue}&date_to=${dateFromSelectValue}&service=Парковка&min_check=0&max_check=100000`
-    }
-
-    const exploreHotelRooms = (hotel_id) => {
-        const dateFromSelectValue = document.getElementById("date_from").value;
-        const dateToSelectValue = document.getElementById("date_to").value;
-        window.location.href = `/pages/hotels/${hotel_id}/rooms?date_from=${dateFromSelectValue}&date_to=${dateToSelectValue}`;
-    }
+   const exploreHotelRooms = (event, hotel_id) => {
+      const date_from = "{{ date_from }}";
+      const date_to = "{{ date_to }}";
+      const min_check = "{{ min_check }}";
+      const max_check = "{{ max_check }}";
+      const services = "{{ services }}";
+       event.preventDefault();
+       window.location.href = `/v1/pages/rooms?hotel_id=${hotel_id}&date_from=${date_from}&date_to=${date_to}&min_check=${min_check}&max_check=${max_check}`;
+   }
 </script>
-
 {% endblock %}
 
 {% block content %}
-<!-- <div class="search-container">
-    <form id="hotel-search">
-      <input type="text" id="search" placeholder="Введите название города или отеля">
-      
-      <div class="date-range">
-        <input type="date" id="check-in" required>
-        <input type="date" id="check-out" required>
-      </div>
-      
-      <div class="price-range">
-        <input type="number" id="min-price" placeholder="Мин. цена">
-        <input type="number" id="max-price" placeholder="Макс. цена">
-      </div>
-      
-      <div class="services">
-        <label><input type="checkbox" name="service" value="wifi"> Wi-Fi</label>
-        <label><input type="checkbox" name="service" value="parking"> Парковка</label>
-        <label><input type="checkbox" name="service" value="breakfast"> Завтрак</label>
-        <label><input type="checkbox" name="service" value="pool"> Бассейн</label>
-        <label><input type="checkbox" name="service" value="gym"> Тренажёрный зал</label>
-        <label><input type="checkbox" name="service" value="restaurant"> Кондиционер в номере</label>
-      </div>
-      
-      <button type="submit" class="search-button">Найти отели</button>
-    </form>
-  </div> -->
 <div>
     {% if hotels %}
     <div class="hotel-list"> 
@@ -86,7 +54,7 @@
                     <div>📍 {{ hotel.location }}</div>
                     <div>{{ " · ".join(hotel.services) }}</div>
                     <div>Осталось номеров: {{ hotel.rooms_left }} из {{hotel.rooms_quantity}}</div>
-                    <button onclick="exploreHotelRooms('{{ hotel.id }}')"
+                    <button onclick="exploreHotelRooms(event, '{{ hotel.id }}')"
                                 class="book-button">
                             Выбрать номер
                         </button>

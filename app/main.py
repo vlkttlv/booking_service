@@ -26,9 +26,6 @@ app = FastAPI()
 
 origins = ["http://localhost:5173"]
 
-# app.add_middleware(
-#     TrustedHostMiddleware, allowed_hosts=["*"]
-# )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -37,46 +34,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.options("/")
-def options():
-    return {"allowed_origin": "http://localhost:5173"}
-
-
 app.include_router(router_users)
-app.include_router(router_bookings)
 app.include_router(router_hotels)
+app.include_router(router_rooms)
+app.include_router(router_bookings)
+app.include_router(router_payment)
 app.include_router(router_pages)
 app.include_router(router_images)
-app.include_router(router_rooms)
-app.include_router(router_payment)
-
-# @app.on_event("startup")
-# async def startup():
-#     """
-#     не помню что делает
-#     """
-#     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-#                               encoding="utf8", decode_response=True)
-#     FastAPICache.init(RedisBackend(redis), prefix="cache")
-
-# ...
 
 
-# @app.middleware("http")
-# async def add_process_time_header(request: Request, call_next):
-#     start_time = time.time()
-#     response = await (call_next(request))
-#     process_time = time.time() - start_time
-#     # response.headers['X-Process-Time'] = str(process_time) # это можно добавить в лог
-#     logger.info("Request execution time", extra={
-#         "process_time": round(process_time, 4)})
-#     return response
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+                              encoding="utf8", decode_response=True)
+    FastAPICache.init(RedisBackend(redis), prefix="cache")
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await (call_next(request))
+    process_time = time.time() - start_time
+    # response.headers['X-Process-Time'] = str(process_time) # это можно добавить в лог
+    logger.info("Request execution time", extra={
+        "process_time": round(process_time, 4)})
+    return response
 
 app = VersionedFastAPI(app,
                        version_format='{major}',
                        prefix_format='/v{major}',
-                       #    description="Greet users with a nice message"
                        )
 
 # Подключение админки
@@ -86,4 +72,5 @@ admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
 admin.add_view(BookingsAdmin)
 admin.add_view(PaymentsAdmin)
+
 app.mount("/static", StaticFiles(directory="app/static"), "static")

@@ -41,3 +41,4 @@ class PaymentsAdmin(ModelView, model=Payments):
     column_list = [c.name for c in Payments.__table__.c]
     name = "Оплата"
     name_plural = "Оплата"
+    icon = "fa-solid fa-money-bill"

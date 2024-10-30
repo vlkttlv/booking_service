@@ -23,21 +23,71 @@
   - Redis
   - Celery
   - Stripe
-  - Jinja
   
  **Frontend**:
   - HTML/CSS
   - JavaScript
   - Bootstrap
+  - Jinja
 
  **Дополнительные инструменты**:
   - Docker
 
 ## Установка и запуск
 
-будет позже :)
+установка с докером будет позже :)
 
-## Ссылка на проект
+### Файл .env:
 
+MODE=DEV <br/>
+LOG_LEVEL=INFO <br/>
+
+DB_HOST=  <br/>
+DB_PORT= <br/>
+DB_USER= <br/>
+DB_PASS= <br/>
+DB_NAME= <br/>
+
+TEST_DB_HOST= <br/>
+TEST_DB_PORT= <br/>
+TEST_DB_USER= <br/>
+TEST_DB_PASS= <br/>
+TEST_DB_NAME= <br/>
+
+SMTP_HOST=smtp.gmail.com <br/>
+SMTP_PORT=465 <br/>
+SMTP_USER= <br/>
+SMTP_PASS= <br/>
+
+REDIS_HOST=localhost <br/>
+REDIS_PORT=6379 <br/>
+
+SECRET_KEY= <br/>
+ALGORITHM=HS256 <br/>
+
+STRIPE_PUBLISHABLE_KEY= <br/>
+STRIPE_SECRET_KEY= <br/>
+
+### Миграции alembic
+Запуск из командной строки, обязательно находясь в корневой директории проекта
+```
+alembic upgrade head
+```
+### Запуск FastAPI
+Запуск из командной строки, обязательно находясь в корневой директории проекта
+```
+uvicorn app.main:app --reload
+```
+### Запуск celery
+Запуск из командной строки, обязательно находясь в корневой директории проекта
+```
+celery --app=app.tasks.celery:celery worker -l INFO -P solo
+```
+### Запуск flower
+Запуск из командной строки, обязательно находясь в корневой директории проекта
+```
+celery --app=app.tasks.celery:celery flower
+```
+## Ссылка на приложение
 будет позже :) (ссылка на render)
 

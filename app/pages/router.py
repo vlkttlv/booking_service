@@ -66,5 +66,6 @@ async def get_bookings_page(request: Request, bookings=Depends(get_bookings)):
 
 
 @router.get("/payments/pay")
-async def pay(request: Request, booking_id: str):
+async def pay(request: Request, booking_id: int):
+    print(f"Received booking_id: {booking_id}")  # Для отладки
     return templates.TemplateResponse(name="pay.html", context={"request": request, "booking_id": booking_id})

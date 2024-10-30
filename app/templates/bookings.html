@@ -17,8 +17,9 @@
               headers: {'Accept': 'accept: */*'}, 
       }).then(response => {
                   if (response.status === 200) {
+                    alert('Бронь удалена. Обновите страницу');
                     window.location.href = "/pages/bookings"
-                    alert('Бронь удалена. Обновите страницу');}
+                    }
                     })
                   };
 </script>

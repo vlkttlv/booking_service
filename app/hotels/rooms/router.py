@@ -8,7 +8,7 @@ from app.users.dependencies import get_current_user
 from app.users.models import Users
 
 
-router = APIRouter(prefix="/hotels", tags=['Отели и Комнаты'])
+router = APIRouter(prefix="/hotels", tags=['Комнаты'])
 
 
 @router.get("/{hotel_id}/rooms")

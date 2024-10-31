@@ -1,6 +1,6 @@
 import shutil
 from fastapi import APIRouter, UploadFile
-from app.tasks.tasks import process_pic
+
 
 router = APIRouter(
     prefix="/images",
@@ -21,13 +21,12 @@ async def add_hotel_images(hotel_id: int, file1: UploadFile,
     im_path_3 = f"app/static/images/hotels/{hotel_id}_3.webp"
     with open(im_path_1, "wb+") as file_object:
         shutil.copyfileobj(file1.file, file_object)
-    process_pic.delay(im_path_1)
+
     with open(im_path_2, "wb+") as file_object:
         shutil.copyfileobj(file2.file, file_object)
-    process_pic.delay(im_path_2)
+
     with open(im_path_3, "wb+") as file_object:
         shutil.copyfileobj(file3.file, file_object)
-    process_pic.delay(im_path_3)
 
     return {"details": f"Все изображения успешно загружены для отеля с id {hotel_id}"}
 
@@ -45,12 +44,11 @@ async def add_rooms_images(room_id: int, file1: UploadFile,
     im_path_3 = f"app/static/images/rooms/{room_id}_3.webp"
     with open(im_path_1, "wb+") as file_object:
         shutil.copyfileobj(file1.file, file_object)
-    process_pic.delay(im_path_1)
+
     with open(im_path_2, "wb+") as file_object:
         shutil.copyfileobj(file2.file, file_object)
-    process_pic.delay(im_path_2)
+
     with open(im_path_3, "wb+") as file_object:
         shutil.copyfileobj(file3.file, file_object)
-    process_pic.delay(im_path_3)
 
     return {"details": f"Все изображения успешно загружены для комнаты с id {room_id}"}

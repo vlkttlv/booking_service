@@ -6,6 +6,13 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+const addImage = (event, hotel_id) => {
+  event.preventDefault();
+  window.location.href = `/v1/pages/admin/hotels/add_images/${hotel_id}`;
+}
+</script>
 {% endblock %}
 
 {% block content %}
@@ -47,11 +54,13 @@
                     <p>location: {{ hotel.location }} </p>
                     <p>services: {{ hotel.services }} </p>
                     <p>rooms_quantity: {{ hotel.rooms_quantity }} </p>
+                    <button onclick="addImage(event, '{{hotel.id}}')" class="book-button">Добавить/изменить изображения</button>
                   </div>
+                  
+
             </div>
             {% endfor %}
         </div>
-        <form action="/v1/pages/admin/hotels/{{ hotel.id }}/add"></form> 
-        <button onclick="payBooking(event, '{{booking.id}}')" class="book-button">Добавить/изменить изображения</button>
+
 </div>
 {% endblock %}

@@ -21,15 +21,16 @@
             font-weight: bold; 
         } 
     </style> 
+
 </head> 
 {% endblock %}
 
 {% block content %}
 <body> 
 
-<h1>Загрузка изображений для отеля с id = {{ hotel_id }} </h1> 
+<h1>Загрузка изображений для комнаты с id = {{ room_id }} </h1> 
 <form id="upload-form"> 
-    <input type="hidden" id="hotel-id" value="{{ hotel_id }}"> 
+    <input type="hidden" id="hotel-id" value="{{ room_id }}"> 
     <div class="form-group"> 
         <label for="file1">Изображение 1:</label> 
         <input type="file" id="file1" accept="image/*" class="form-control" required> 
@@ -51,7 +52,7 @@
         document.getElementById('upload-form').addEventListener('submit', async function (event) { 
             event.preventDefault(); // Предотвращаем стандартное поведение формы 
 
-            const hotelId = document.getElementById('hotel-id').value; 
+            const roomId = document.getElementById('hotel-id').value; 
             const file1 = document.getElementById('file1').files[0]; 
             const file2 = document.getElementById('file2').files[0]; 
             const file3 = document.getElementById('file3').files[0]; 
@@ -62,7 +63,7 @@
             formData.append('file3', file3); 
 
             try { 
-                const response = await fetch(`http://127.0.0.1:8000/v1/images/hotels/${hotelId}`, { 
+                const response = await fetch(`http://127.0.0.1:8000/v1/images/rooms/${roomId}`, { 
                     method: 'POST', 
                     headers:{'Accept': 'application/json'},
                     body: formData, 

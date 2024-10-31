@@ -96,10 +96,20 @@ async def get_rooms_list(request: Request, role_of_current_user=Depends(get_role
 
 
 @router.get("/admin/hotels/add")
-async def add_hotel(request: Request, hotel_id: int, role_of_current_user=Depends(get_role_of_current_user)):
-    return templates.TemplateResponse(name="add-hotel.html", context={"request": request, "hotel_id": hotel_id})
+async def add_hotel(request: Request,  role_of_current_user=Depends(get_role_of_current_user)):
+    return templates.TemplateResponse(name="add-hotel.html", context={"request": request})
 
 
 @router.get("/admin/rooms/add")
+async def add_room(request: Request, role_of_current_user=Depends(get_role_of_current_user)):
+    return templates.TemplateResponse(name="add-room.html", context={"request": request, })
+
+
+@router.get("/admin/hotels/add_images/{hotel_id}")
+async def add_hotel(request: Request, hotel_id: int, role_of_current_user=Depends(get_role_of_current_user)):
+    return templates.TemplateResponse(name="add-images-hotels.html", context={"request": request, "hotel_id": hotel_id})
+
+
+@router.get("/admin/rooms/add_images/{room_id}")
 async def add_room(request: Request, room_id: int, role_of_current_user=Depends(get_role_of_current_user)):
-    return templates.TemplateResponse(name="add-room.html", context={"request": request, "room_id": room_id})
+    return templates.TemplateResponse(name="add-images-rooms.html", context={"request": request, "room_id": room_id})

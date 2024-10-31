@@ -1,0 +1,91 @@
+{% extends "main-admin.html" %} 
+
+{% block content %} 
+<!DOCTYPE html> 
+<html lang="ru"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Добавить отель</title> 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+    <style> 
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f8f9fa; 
+        } 
+        .container { 
+            margin-top: 20px; 
+        } 
+        .response-message { 
+            margin-top: 20px; 
+            font-weight: bold; 
+        } 
+    </style> 
+</head> 
+<body> 
+
+<div class="container"> 
+    <h1>Добавить отель</h1> 
+    <form id="hotel-form"> 
+        <div class="form-group"> 
+            <label for="room-name">Название отеля:</label> 
+            <input type="text" id="room-name" class="form-control" required> 
+        </div> 
+        <div class="form-group"> 
+            <label for="room-location">Локация:</label> 
+            <input type="text" id="room-location" class="form-control" required> 
+        </div> 
+        <div class="form-group"> 
+            <label for="room-services">Услуги (через запятую):</label> 
+            <input type="text" id="room-services" class="form-control" required> 
+        </div> 
+        <div class="form-group"> 
+            <label for="room-quantity">Количество комнат:</label> 
+            <input type="number" id="room-quantity" class="form-control" required> 
+        </div> 
+        <button type="submit" class="btn btn-primary">Добавить отель</button> 
+    </form> 
+    <div class="response-message" id="response-message"></div> 
+</div> 
+
+<script> 
+    document.getElementById('hotel-form').addEventListener('submit', async function (event) { 
+        event.preventDefault(); // Предотвращаем стандартное поведение формы 
+
+        const hotelName = document.getElementById('room-name').value; 
+        const hotelLocation = document.getElementById('room-location').value; 
+        const hotelQuantity = parseInt(document.getElementById('room-quantity').value, 10); 
+        const hotelServices = document.getElementById('room-services').value.split(',').map(service => service.trim()); // Разделяем услуги и убираем лишние пробелы 
+
+        // Отправка данных о отеле 
+        const hotelData = { 
+            name: hotelName, 
+            location: hotelLocation, 
+            services: hotelServices, 
+            rooms_quantity: hotelQuantity, // Убедитесь, что имя поля соответствует ожиданиям сервера
+        }; 
+
+            await fetch(`http://127.0.0.1:8000/v1/hotels/add_hotel`, { 
+                method: 'POST', 
+                headers: { 
+                    'Accept': 'application/json', 
+                    'Content-Type': 'application/json' 
+                }, 
+                body: JSON.stringify(hotelData) 
+            }).then(response => {
+                  if (response.status === 200) {
+                    alert('Отель успешно добавлен');
+                    // Перенаправление или другое действие после успешного добавления
+                    window.location.href = "/v1/pages/admin/hotels/list"; 
+                    }
+                    else { 
+                document.getElementById('response-message').textContent = 'Ошибка при добавлении отеля.'; 
+            } 
+                    })
+
+    }); 
+</script> 
+
+</body> 
+</html> 
+{% endblock %}

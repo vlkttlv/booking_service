@@ -1,0 +1,59 @@
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='style/login.css') }}">
+<script> 
+    async function loginUser() { 
+        const url = "http://127.0.0.1:8000/v1/auth/login"; 
+        const data = { 
+            email: document.getElementById("email").value, 
+            password: document.getElementById("password").value, 
+        }; 
+        const wrongCredentialsSpan = document.getElementById("wrong_credentials"); 
+        wrongCredentialsSpan.textContent = ""; 
+
+        try {
+            const response = await fetch(url, { 
+                method: 'POST', 
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }, 
+                body: JSON.stringify(data), 
+            }); 
+
+            if (response.status === 200) { 
+                const result = await response.json(); // Получаем данные из ответа
+                if (result.role === "user") { 
+                    alert('Ты не админ... уйди отсюда...'); 
+                    window.location.href = "/v1/pages/admin/login"; 
+                } else { 
+                    window.location.href = "/v1/pages/admin/main"; 
+                } 
+            } else { 
+                alert('Неверный логин или пароль'); 
+            } 
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при выполнении запроса'); 
+        }
+    } 
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="login">
+    <h1>Админка</h1>
+        <div>
+            <div class="flex flex-col items-start text-xl mb-5">
+                <label for="email" class="mb-1">Email</label>
+                <input id="email" name="email" type="text" value="" placeholder="test@test.ru">
+
+                <label style="margin-top: 5px;" for="password" class="mb-1">Пароль</label>
+                <input id="password" name="password" type="password" value="" placeholder="********">
+                <span id="wrong_credentials" class="text-sm text-red-400"></span>
+            </div>
+        </div>
+      <button style="margin-top: 10px;" onclick="loginUser()">Войти</button>
+    </div>
+  </div>
+{% endblock %}

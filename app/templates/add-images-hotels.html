@@ -1,0 +1,64 @@
+{% extends "main-admin.html" %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка изображений для комнаты</title>
+</head>
+<body>
+
+<h1>Загрузка изображений для комнаты</h1>
+<form id="upload-form">
+    <label for="room-id">ID комнаты:</label>
+    <input type="number" id="room-id" required>
+
+    <label for="file1">Изображение 1:</label>
+    <input type="file" id="file1" accept="image/*" required>
+
+    <label for="file2">Изображение 2:</label>
+    <input type="file" id="file2" accept="image/*" required>
+
+    <label for="file3">Изображение 3:</label>
+    <input type="file" id="file3" accept="image/*" required>
+
+    <button type="submit">Загрузить изображения</button>
+</form>
+
+<div id="response-message"></div>
+
+<script>
+    document.getElementById('upload-form').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение формы
+
+        const roomId = document.getElementById('room-id').value;
+        const file1 = document.getElementById('file1').files[0];
+        const file2 = document.getElementById('file2').files[0];
+        const file3 = document.getElementById('file3').files[0];
+
+        const formData = new FormData();
+        formData.append('file1', file1);
+        formData.append('file2', file2);
+        formData.append('file3', file3);
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/hotels/${{hotel_id}}/add`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                document.getElementById('response-message').textContent = result.details;
+            } else {
+                document.getElementById('response-message').textContent = 'Ошибка при загрузке изображений.';
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            document.getElementById('response-message').textContent = 'Ошибка при загрузке изображений.';
+        }
+    });
+</script>
+
+</body>
+</html>

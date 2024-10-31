@@ -3,10 +3,13 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.hotels.dao import HotelDAO
+from app.hotels.rooms.dao import RoomDAO
 from app.hotels.rooms.router import get_rooms
 from app.hotels.router import get_hotel_by_id, get_hotels
 from app.booking.router import get_bookings
-
+from app.users.dependencies import get_role_of_current_user
+from app.hotels.models import Hotels
 
 router = APIRouter(
     prefix="/pages",
@@ -67,5 +70,36 @@ async def get_bookings_page(request: Request, bookings=Depends(get_bookings)):
 
 @router.get("/payments/pay")
 async def pay(request: Request, booking_id: int):
-    print(f"Received booking_id: {booking_id}")  # Для отладки
     return templates.TemplateResponse(name="pay.html", context={"request": request, "booking_id": booking_id})
+
+
+@router.get("/admin/login", response_class=HTMLResponse)
+async def admin_login(request: Request):
+    return templates.TemplateResponse(name="login-admin.html", context={"request": request})
+
+
+@router.get("/admin/main")
+async def admin_main(request: Request, role_of_current_user=Depends(get_role_of_current_user)):
+    return templates.TemplateResponse(name="main-admin.html", context={"request": request})
+
+
+@router.get("/admin/hotels/list")
+async def get_hotels_list(request: Request, role_of_current_user=Depends(get_role_of_current_user)):
+    hotels = await HotelDAO.find_all()
+    return templates.TemplateResponse(name="hotels-admin.html", context={"request": request, "hotels": hotels})
+
+
+@router.get("/admin/rooms/list")
+async def get_rooms_list(request: Request, role_of_current_user=Depends(get_role_of_current_user)):
+    rooms = await RoomDAO.find_all()
+    return templates.TemplateResponse(name="rooms-admin.html", context={"request": request, "rooms": rooms})
+
+
+@router.get("/admin/hotels/add")
+async def add_hotel(request: Request, hotel_id: int, role_of_current_user=Depends(get_role_of_current_user)):
+    return templates.TemplateResponse(name="add-hotel.html", context={"request": request, "hotel_id": hotel_id})
+
+
+@router.get("/admin/rooms/add")
+async def add_room(request: Request, room_id: int, role_of_current_user=Depends(get_role_of_current_user)):
+    return templates.TemplateResponse(name="add-room.html", context={"request": request, "room_id": room_id})

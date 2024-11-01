@@ -50,14 +50,14 @@
         const bookingId = url_book.searchParams.get('booking_id');   
  
         const params = new URLSearchParams({   
-            token: token.id,   
             booking_id: bookingId,   
         });   
         const url = "http://127.0.0.1:8000/v1/payments/pay";     
         await fetch(`${url}?${params}`, {   
             method: 'POST',   
             headers: {   
-                'Accept': 'application/json'   
+                'Accept': 'application/json',
+                'Stripe-Token': token.id,
             }   
         })   
         .then(response => {     

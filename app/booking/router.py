@@ -1,17 +1,15 @@
 from datetime import date
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from pydantic import parse_obj_as
-from sqlalchemy import delete, select
 from fastapi_versioning import version
 from app.booking.dao import BookingDAO
-from app.database import async_session_maker
-from app.booking.models import Bookings
 from app.booking.schemas import SBooking
 from app.exceptions import RoomCannotBeBooked
 from app.payments.dao import PaymentDAO
 from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
+from app.logger import logger
 
 router = APIRouter(
     prefix="/bookings",
@@ -34,6 +32,7 @@ async def add_booking(room_id: int, date_from: date, date_to: date,
     booking = await BookingDAO.add(user.id, room_id, date_from, date_to)
     if not booking:
         raise RoomCannotBeBooked
+    logger.info(f"Была добавлена бронь №{booking.id}")
     booking_dict = parse_obj_as(SBooking, booking).dict()
     send_booking_confirmation_email.delay(booking_dict, user.email)
 
@@ -44,3 +43,4 @@ async def delete_booking(booking_id: int, user: Users = Depends(get_current_user
     """Удаление брони"""
     await PaymentDAO.delete(booking_id=booking_id)
     await BookingDAO.delete(user_id=user.id, id=booking_id)
+    logger.info(f"Была удалена бронь #{booking_id} и платеж")

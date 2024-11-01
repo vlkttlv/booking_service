@@ -54,3 +54,8 @@ class RoomCannotBeBooked(BookingException):
 class WrongDateFrom(BookingException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = "Дата заезда не должна быть позже даты выезда"
+
+
+class BookingAlreadyPaid(BookingException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Данное бронирование уже оплачено"

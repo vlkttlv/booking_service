@@ -1,0 +1,9 @@
+[
+    {
+        "user_id": 1,
+        "booking_id": 1,
+        "amount": 367500,
+        "date_to": "2024-06-15",
+        "status": "success"
+    }
+]

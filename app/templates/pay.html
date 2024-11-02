@@ -5,7 +5,8 @@
 <script src="https://js.stripe.com/v3/"></script>  
  
 <script>    
-    const stripe = Stripe('pk_test_51Q64pzEfHbwG18yBRwBfKOIMw3VLVXjyjxDFCtlRtldBVij97WQPLsJ5IFHj3PTuQ2AuiuMbg6wfKsYkgxy7TvOB004PNO55h9');   
+    const key = "{{ stripe_key }}"; 
+    const stripe = Stripe(key);   
     const elements = stripe.elements();   
  
     const cardElement = elements.create('card', {   
@@ -52,7 +53,7 @@
         const params = new URLSearchParams({   
             booking_id: bookingId,   
         });   
-        const url = "http://127.0.0.1:8000/v1/payments/pay";     
+        const url = "/v1/payments/pay";     
         await fetch(`${url}?${params}`, {   
             method: 'POST',   
             headers: {   

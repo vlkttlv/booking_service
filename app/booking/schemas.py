@@ -27,7 +27,7 @@ class SBookingInfo(SBooking):
     services: list[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SNewBooking(BaseModel):

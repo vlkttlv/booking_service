@@ -76,7 +76,7 @@
             price: roomPrice
         };
 
-        await fetch(`http://127.0.0.1:8000/v1/hotels/${hotelId}/add_room`, {
+        await fetch(`/v1/hotels/${hotelId}/add_room`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

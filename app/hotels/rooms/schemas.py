@@ -12,7 +12,7 @@ class SRoom(BaseModel):
     quantity: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SRoomInfo(SRoom):
@@ -20,7 +20,7 @@ class SRoomInfo(SRoom):
     rooms_left: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SRoomAdd(BaseModel):
@@ -34,4 +34,4 @@ class SRoomAdd(BaseModel):
     # image_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -32,10 +32,9 @@
 
  **Дополнительные инструменты**:
   - Docker
+  - Docker compose
 
 ## Установка и запуск
-
-установка с докером будет позже :)
 
 ### Файл .env:
 
@@ -68,25 +67,61 @@ ALGORITHM=HS256 <br/>
 STRIPE_PUBLISHABLE_KEY= <br/>
 STRIPE_SECRET_KEY= <br/>
 
+### Файл .env-for-prod:
+MODE=DEV <br/>
+LOG_LEVEL=INFO <br/>
+
+DB_HOST=db <br/>
+DB_PORT= <br/>
+DB_USER= <br/>
+DB_PASS= <br/>
+DB_NAME=booking_app <br/>
+
+POSTGRES_DB=booking_app <br/>
+POSTGRES_USER= <br/>
+POSTGRES_PASSWORD= <br/>
+
+SMTP_HOST=smtp.gmail.com <br/>
+SMTP_PORT=465 <br/>
+SMTP_USER= <br/>
+SMTP_PASS= <br/>
+
+REDIS_HOST=redis <br/>
+REDIS_PORT=6379 <br/>
+
+SECRET_KEY= <br/>
+ALGORITHM=HS256 <br/>
+
+STRIPE_PUBLISHABLE_KEY= <br/>
+STRIPE_SECRET_KEY= <br/>
+
 ### Миграции alembic
-Запуск из командной строки, обязательно находясь в корневой директории проекта
+Запуски производятся из командной строки, обязательно находясь в корневой директории проекта
 ```
 alembic upgrade head
 ```
 ### Запуск FastAPI
-Запуск из командной строки, обязательно находясь в корневой директории проекта
 ```
 uvicorn app.main:app --reload
 ```
 ### Запуск celery
-Запуск из командной строки, обязательно находясь в корневой директории проекта
 ```
 celery --app=app.tasks.celery:celery worker -l INFO -P solo
 ```
 ### Запуск flower
-Запуск из командной строки, обязательно находясь в корневой директории проекта
 ```
 celery --app=app.tasks.celery:celery flower
+```
+### Dockerfile
+Для запуска веб-сервера (FastAPI) внутри контейнера необходимо иметь уже запущенный экземпляр PostgreSQL на компьютере. Команда также запускается из корневой директории, в которой лежит файл Dockerfile.
+```
+docker build .
+```  
+### Docker compose
+Для запуска всех сервисов (БД, Redis, FastAPI, Celery, Flower) необходимо использовать файл docker-compose.yaml и команды
+```
+docker compose build
+docker compose up
 ```
 ## Ссылка на приложение
 будет позже :) (ссылка на render)

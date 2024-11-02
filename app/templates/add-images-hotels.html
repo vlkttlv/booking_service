@@ -62,7 +62,7 @@
             formData.append('file3', file3); 
 
             try { 
-                const response = await fetch(`http://127.0.0.1:8000/v1/images/hotels/${hotelId}`, { 
+                const response = await fetch(`/v1/images/hotels/${hotelId}`, { 
                     method: 'POST', 
                     headers:{'Accept': 'application/json'},
                     body: formData, 

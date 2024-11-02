@@ -10,6 +10,7 @@ from app.hotels.router import get_hotel_by_id, get_hotels
 from app.booking.router import get_bookings
 from app.users.dependencies import get_role_of_current_user
 from app.hotels.models import Hotels
+from app.config import settings
 
 router = APIRouter(
     prefix="/pages",
@@ -69,8 +70,8 @@ async def get_bookings_page(request: Request, bookings=Depends(get_bookings)):
 
 
 @router.get("/payments/pay")
-async def pay(request: Request, booking_id: int):
-    return templates.TemplateResponse(name="pay.html", context={"request": request, "booking_id": booking_id})
+async def pay(request: Request, booking_id: int, stripe_key: str = settings.STRIPE_PUBLISHABLE_KEY):
+    return templates.TemplateResponse(name="pay.html", context={"request": request, "booking_id": booking_id, "stripe_key": stripe_key})
 
 
 @router.get("/admin/login", response_class=HTMLResponse)

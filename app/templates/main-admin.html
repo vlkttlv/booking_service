@@ -8,7 +8,7 @@
     {% block head %}    <link rel="stylesheet" href="{{ url_for('static', path='style/login-admin.css') }}">{% endblock %}
     <script>
       async function logoutUser() {
-          const url = "http://127.0.0.1:8000/v1/auth/logout";
+          const url = "/v1/auth/logout";
           await fetch(url, {
               method: 'POST',
               header: {"Accept": "application/json"}

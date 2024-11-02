@@ -6,7 +6,7 @@
         async function registerUser() {
             const wrongCredentialsSpan = document.getElementById("wrong_credentials");
             wrongCredentialsSpan.textContent = "";
-           const url = "http://127.0.0.1:8000/v1/auth/register";
+           const url = "/v1/auth/register";
            const data = {
            email: document.getElementById("email").value,
            password: document.getElementById("password").value,
@@ -17,7 +17,7 @@
                 headers: {'Accept': 'application/json','Content-Type': 'application/json'},
                 body: JSON.stringify(data),
             }).then(response => {
-                if (response.status === 201) {
+                if (response.status === 200) {
                     window.location.href = "/v1/pages/auth/login"
                 }
                 if (response.status === 409) {

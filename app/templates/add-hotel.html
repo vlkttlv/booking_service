@@ -65,7 +65,7 @@
             rooms_quantity: hotelQuantity, // Убедитесь, что имя поля соответствует ожиданиям сервера
         }; 
 
-            await fetch(`http://127.0.0.1:8000/v1/hotels/add_hotel`, { 
+            await fetch(`/v1/hotels/add_hotel`, { 
                 method: 'POST', 
                 headers: { 
                     'Accept': 'application/json', 

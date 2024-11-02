@@ -8,8 +8,8 @@ class Payments(Base):
     __tablename__ = "payments"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(ForeignKey("user.id"))
-    booking_id = Column(ForeignKey("booking.id"))
+    user_id = Column(ForeignKey("users.id"))
+    booking_id = Column(ForeignKey("bookings.id"))
     amount = Column(Integer, nullable=False)
     date_to = Column(Date, nullable=False)
     status = Column(String)

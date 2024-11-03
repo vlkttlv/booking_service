@@ -17,6 +17,7 @@ from app.hotels.router import router as router_hotels
 from app.pages.router import router as router_pages
 from app.images.router import router as router_images
 from app.hotels.rooms.router import router as router_rooms
+from app.hotels.router import router_csv as router_for_db
 from app.payments.router import router as router_payment
 from app.database import engine
 from app.admin.auth import authentication_backend
@@ -49,6 +50,7 @@ app.include_router(router_bookings)
 app.include_router(router_payment)
 app.include_router(router_pages)
 app.include_router(router_images)
+app.include_router(router_for_db)
 
 
 @app.on_event("startup")

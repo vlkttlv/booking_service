@@ -1,13 +1,17 @@
 from datetime import date, datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
+from fastapi_cache.decorator import cache
+
+from app.hotels.models import Hotels
+from app.hotels.rooms.dao import RoomDAO
+from app.users.dependencies import get_current_user
+from app.users.models import Users
 from app.exceptions import IncorrectRoleException, WrongDateFrom
 from app.hotels.dao import HotelDAO, HotelImagesDAO
 from app.hotels.schemas import SHotelAdd, SHotelInfo, SHotels
-from fastapi_cache.decorator import cache
 
-from app.users.dependencies import get_current_user
-from app.users.models import Users
+import pandas as pd
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
 
@@ -63,3 +67,34 @@ async def get_hotel_by_id(
     hotel_id: int,
 ) -> Optional[SHotels]:
     return await HotelDAO.find_one_or_none(id=hotel_id)
+
+
+router_csv = APIRouter(prefix="/hotels", tags=["Загрузка отелей и комнат"])
+
+router_csv.post("/add_hotels_and_rooms_in_db")
+
+
+async def add_hotels_and_rooms_in_db():
+
+    df_hotels = pd.read_csv('hotels.csv')
+    df_rooms = pd.read_csv('rooms.csv')
+
+    for index, row in df_hotels.iterrows():
+        # Создание объекта модели на основе данных из строки
+
+        await HotelDAO.add(
+            name=row['name'],
+            location=row['location'],
+            services=row['services'],
+            rooms_quantity=row['rooms_quantity'])
+
+    for index, row in df_rooms.iterrows():
+        # Создание объекта модели на основе данных из строки
+
+        await RoomDAO.add(hotel_id=row['hotel_id'],
+                          name=row['name'],
+                          description=row['description'],
+                          price=row['price'],
+                          services=row['services'],
+                          quantity=row['quantity'])
+    return {"detail": 'отели и комнаты были добавлены в БД'}

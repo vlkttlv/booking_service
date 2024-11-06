@@ -118,11 +118,9 @@ celery --app=app.tasks.celery:celery flower
 docker build .
 ```  
 ### Docker compose
-Для запуска всех сервисов (БД, Redis, FastAPI, Celery, Flower) необходимо использовать файл docker-compose.yaml и команды
+Для запуска всех сервисов (БД, Redis, FastAPI, Celery, Flower) необходимо использовать файл docker-compose.yaml и команду
 ```
-docker compose build
-docker compose up
+docker compose up --build
 ```
-## Ссылка на приложение
-будет позже :) (ссылка на render)
+
 

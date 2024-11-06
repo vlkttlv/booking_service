@@ -1,4 +1,6 @@
+import ast
 from datetime import date, datetime
+import json
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
 from fastapi_cache.decorator import cache
@@ -69,32 +71,28 @@ async def get_hotel_by_id(
     return await HotelDAO.find_one_or_none(id=hotel_id)
 
 
-router_csv = APIRouter(prefix="/hotels", tags=["Загрузка отелей и комнат"])
-
-router_csv.post("/add_hotels_and_rooms_in_db")
-
-
+@router.post("/add_hotels_and_rooms_in_db")
 async def add_hotels_and_rooms_in_db():
 
-    df_hotels = pd.read_csv('hotels.csv')
-    df_rooms = pd.read_csv('rooms.csv')
+    with open("hotels.json", 'r') as file:
+        hotels_data = json.load(file)  # Загружаем данные из JSON
 
-    for index, row in df_hotels.iterrows():
-        # Создание объекта модели на основе данных из строки
+        for hotel in hotels_data:
 
-        await HotelDAO.add(
-            name=row['name'],
-            location=row['location'],
-            services=row['services'],
-            rooms_quantity=row['rooms_quantity'])
+            await HotelDAO.add(name=hotel['name'],
+                               location=hotel['location'],
+                               services=hotel['services'],
+                               rooms_quantity=hotel['rooms_quantity'])
+    with open("rooms.json", 'r') as file:
+        rooms_data = json.load(file)  # Загружаем данные из JSON
 
-    for index, row in df_rooms.iterrows():
-        # Создание объекта модели на основе данных из строки
+        for room in rooms_data:
 
-        await RoomDAO.add(hotel_id=row['hotel_id'],
-                          name=row['name'],
-                          description=row['description'],
-                          price=row['price'],
-                          services=row['services'],
-                          quantity=row['quantity'])
+            await RoomDAO.add(hotel_id=room['hotel_id'],
+                              name=room['name'],
+                              description=room['description'],
+                              price=room['price'],
+                              services=room['services'],
+                              quantity=room['quantity'])
+
     return {"detail": 'отели и комнаты были добавлены в БД'}
